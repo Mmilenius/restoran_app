@@ -1,0 +1,9 @@
+venv/
+.pylintrc
+__pycache__/
+cache
+
+.idea
+static/deps/images
+db.sqlite3
+media/
