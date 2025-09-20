@@ -25,6 +25,7 @@ urlpatterns = [
     path('categories/', include('dish.urls', namespace='dish')),
     path('accounts/', include('allauth.urls')),
     path('users/', include('users.urls', namespace='users')),
+    path('cart/', include('carts.urls', namespace='carts')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

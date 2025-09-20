@@ -11,8 +11,32 @@
     <title>Title</title>
     <style>
         {% block css %}
-
         {% endblock %}
+        /* ==== CART MODAL ==== */
+        .cart-modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .cart-modal-content {
+            background: white;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+        }
+        .cart-modal-content .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 22px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -26,9 +50,8 @@
                 </div>
             </div>
             <div class="header-actions">
-                <button class="cart-btn" id="cart-btn">
-                    🛒 <span id="cart-count">0</span> позиція за <span id="cart-total">0
-                </span> ₴
+                <button class="cart-btn" onclick="toggleCartModal()">
+                    🛒 Корзина <span id="cart-count">{{ cart_count }}</span>
                 </button>
                 {% if user.is_authenticated %}
                     <div class="user-btn" title="{{ users.username }}">👤</div>
@@ -52,25 +75,56 @@
         </div>
     </nav>
 
-        <div class="container">
-            <div class="row mt-1">
-
-                <div class="col-lg-10">
-                    <!-- Контент на сторінці -->
-                    {% block content %}
-                    {% endblock %}
-                </div>
+    <div class="container">
+        <div class="row mt-1">
+            <div class="col-lg-10">
+                <!-- Контент на сторінці -->
+                {% block content %}
+                {% endblock %}
             </div>
         </div>
+    </div>
 
     {% block footer %}
-
     {% endblock %}
+
+    <!-- ==== CART MODAL ==== -->
+    <div id="cartModal" class="cart-modal">
+        <div class="cart-modal-content">
+            <span class="close-btn" onclick="toggleCartModal()">&times;</span>
+            <div id="cart-container">
+                {% include "carts/cart.html" %}
+            </div>
+        </div>
+    </div>
+
     <script src="{% static "deps/js/jquery/jquery-3.7.0.min.js" %}"></script>
     <script src="{% static "deps/js/jquery-ajax.js" %}"></script>
     <script src="{% static "deps/js/bootstrap/bootstrap.bundle.min.js" %}"></script>
     {% block script %}
-
     {% endblock %}
+
+    <script>
+        function toggleCartModal() {
+            const modal = document.getElementById("cartModal");
+            if (modal.style.display === "flex") {
+                modal.style.display = "none";
+            } else {
+                modal.style.display = "flex";
+                // AJAX підвантаження корзини
+                fetch("/cart/")
+                    .then(res => res.text())
+                    .then(html => {
+                        document.getElementById("cart-container").innerHTML = html;
+                    });
+            }
+        }
+        function updateCartCounter(totalItems) {
+            const cartCounter = document.getElementById('cart-count');
+            if (cartCounter) {
+                cartCounter.textContent = totalItems;
+            }
+        }
+    </script>
 </body>
 </html>

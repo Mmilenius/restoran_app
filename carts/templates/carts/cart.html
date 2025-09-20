@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Корзина - Гуцульський двір</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .cart-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        }
+
+        .cart-header h1 {
+            color: #FF5722;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-summary {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .summary-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .summary-item .label {
+            color: #666;
+        }
+
+        .summary-item .value {
+            font-weight: 600;
+            color: #FF5722;
+        }
+
+        .cart-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .cart-items {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        }
+
+        .cart-item {
+            display: grid;
+            grid-template-columns: 100px 1fr auto auto auto;
+            gap: 1rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+            align-items: center;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-image {
+            width: 100px;
+            height: 75px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: #f0f0f0;
+        }
+
+        .item-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .item-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        .item-price {
+            color: #FF5722;
+            font-weight: 600;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quantity-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quantity-btn:hover {
+            background: #FF5722;
+            color: white;
+            border-color: #FF5722;
+        }
+
+        .quantity-input {
+            width: 50px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .item-total {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #FF5722;
+            min-width: 80px;
+            text-align: right;
+        }
+
+        .remove-btn {
+            background: #ff4444;
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .remove-btn:hover {
+            background: #cc0000;
+            transform: scale(1.1);
+        }
+
+        .cart-sidebar {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+
+        .sidebar-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .total-row:last-child {
+            border-bottom: none;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #FF5722;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #FF5722, #FF7043);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .checkout-btn:hover {
+            background: linear-gradient(135deg, #E64A19, #FF5722);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 87, 34, 0.3);
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        }
+
+        .empty-cart h2 {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .empty-cart p {
+            color: #999;
+            margin-bottom: 2rem;
+        }
+
+        .continue-shopping {
+            background: #FF5722;
+            color: white;
+            text-decoration: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+
+        .continue-shopping:hover {
+            background: #E64A19;
+            transform: translateY(-2px);
+        }
+
+        .clear-cart-btn {
+            background: #666;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            transition: all 0.2s;
+        }
+
+        .clear-cart-btn:hover {
+            background: #555;
+        }
+
+        @media (max-width: 768px) {
+            .cart-content {
+                grid-template-columns: 1fr;
+            }
+
+            .cart-item {
+                grid-template-columns: 80px 1fr;
+                gap: 1rem;
+            }
+
+            .item-controls {
+                grid-column: 1 / -1;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-top: 1rem;
+                padding-top: 1rem;
+                border-top: 1px solid #eee;
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.error {
+            background: #f44336;
+        }
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quantity-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .quantity-btn:hover {
+            background: #FF5722;
+            color: white;
+            border-color: #FF5722;
+        }
+
+        .quantity-input {
+            width: 50px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 0.5rem;
+            font-size: 1rem;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="cart-header">
+            <h1>Ваша корзина</h1>
+            <div class="cart-summary">
+                <div class="summary-item">
+                    <span class="label">Товарів:</span>
+                    <span class="value" id="total-items">{{ total_items }}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="label">Загальна сума:</span>
+                    <span class="value" id="total-price">{{ total_price }} ₴</span>
+                </div>
+            </div>
+        </div>
+
+        {% if cart_items %}
+        <div class="cart-content">
+            <div class="cart-items" id="cart-items">
+                {% for item in cart_items %}
+                <div class="cart-item" data-dish-id="{{ item.dish.id }}">
+                    {% if item.dish.image %}
+                    <img src="{{ item.dish.image.url }}" alt="{{ item.dish.name }}" class="item-image">
+                    {% else %}
+                    <img src="/static/deps/images/Not found image.png" alt="{{ item.dish.name }}" class="item-image">
+                    {% endif %}
+
+                    <div class="item-details">
+                        <div class="item-name">{{ item.dish.name }}</div>
+                        <div class="item-price">{{ item.dish.price }} ₴</div>
+                    </div>
+
+                    <div class="quantity-controls">
+                        <button class="quantity-btn" onclick="updateQuantity({{ item.dish.id }}, -1)">-</button>
+                        <input type="number" class="quantity-input" value="{{ item.quantity }}"
+                               onchange="setQuantity({{ item.dish.id }}, this.value)" min="1">
+                        <button class="quantity-btn" onclick="updateQuantity({{ item.dish.id }}, 1)">+</button>
+                    </div>
+
+                    <div class="item-total" data-item-total="{{ item.get_total_price }}">
+                        {{ item.get_total_price }} ₴
+                    </div>
+
+                    <button class="remove-btn" onclick="removeFromCart({{ item.dish.id }})" title="Видалити">
+                        ×
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="cart-sidebar">
+                <h2 class="sidebar-title">Підсумок</h2>
+                <div class="total-row">
+                    <span>Товарів:</span>
+                    <span id="sidebar-total-items">{{ total_items }}</span>
+                </div>
+                <div class="total-row">
+                    <span>Загальна сума:</span>
+                    <span id="sidebar-total-price">{{ total_price }} ₴</span>
+                </div>
+                <button class="checkout-btn" onclick="proceedToCheckout()">
+                    Оформити замовлення
+                </button>
+                <button class="clear-cart-btn" onclick="clearCart()">
+                    Очистити корзину
+                </button>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-cart">
+            <h2>Ваша корзина порожня</h2>
+            <p>Додайте товари до корзини, щоб продовжити покупки</p>
+            <a href="{% url 'dish:menu' %}" class="continue-shopping">Продовжити покупки</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+    // Функція для показу сповіщень
+    function showNotification(message, isError = false) {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.className = isError ? 'notification error show' : 'notification show';
+
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 3000);
+    }
+
+    // Функція для оновлення інтерфейсу корзини
+    function updateCartUI(data) {
+        // Оновлення заголовка корзини
+        document.getElementById('total-items').textContent = data.cart_total_items;
+        document.getElementById('total-price').textContent = data.cart_total_price + ' ₴';
+
+        // Оновлення бічної панелі
+        document.getElementById('sidebar-total-items').textContent = data.cart_total_items;
+        document.getElementById('sidebar-total-price').textContent = data.cart_total_price + ' ₴';
+
+        // Оновлення лічильника в header
+        const cartCounter = document.getElementById('cart-count');
+        if (cartCounter) {
+            cartCounter.textContent = data.cart_total_items;
+        }
+    }
+
+    // Оновлення кількості товару
+    function updateQuantity(dishId, change) {
+        const cartItem = document.querySelector(`[data-dish-id="${dishId}"]`);
+        if (!cartItem) return;
+
+        const quantityInput = cartItem.querySelector('.quantity-input');
+        const currentQuantity = parseInt(quantityInput.value);
+        const newQuantity = currentQuantity + change;
+
+        if (newQuantity < 1) {
+            removeFromCart(dishId);
+            return;
+        }
+
+        setQuantity(dishId, newQuantity);
+    }
+
+    // Встановлення конкретної кількості
+    function setQuantity(dishId, quantity) {
+        quantity = parseInt(quantity);
+        if (quantity < 1) {
+            removeFromCart(dishId);
+            return;
+        }
+
+        fetch('/cart/update/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                dish_id: dishId,
+                quantity: quantity
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                const cartItem = document.querySelector(`[data-dish-id="${dishId}"]`);
+                if (cartItem) {
+                    const quantityInput = cartItem.querySelector('.quantity-input');
+                    const itemTotal = cartItem.querySelector('.item-total');
+
+                    quantityInput.value = quantity;
+                    itemTotal.textContent = data.item_total_price + ' ₴';
+                }
+
+                updateCartUI(data);
+                showNotification(data.message);
+            } else {
+                showNotification(data.message, true);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Помилка при оновленні кількості', true);
+        });
+    }
+
+    // Видалення товару з корзини
+    function removeFromCart(dishId) {
+        if (!confirm('Ви впевнені, що хочете видалити цей товар з корзини?')) {
+            return;
+        }
+
+        fetch('/cart/remove/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                dish_id: dishId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const cartItem = document.querySelector(`[data-dish-id="${dishId}"]`);
+                if (cartItem) {
+                    cartItem.remove();
+                }
+
+                updateCartUI(data);
+                showNotification(data.message);
+
+                // Якщо корзина порожня, перезавантажуємо сторінку
+                if (data.cart_total_items === 0) {
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                }
+            } else {
+                showNotification(data.message, true);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Помилка при видаленні товару', true);
+        });
+    }
+
+    // Очищення корзини
+    function clearCart() {
+        if (!confirm('Ви впевнені, що хочете очистити всю корзину?')) {
+            return;
+        }
+
+        fetch('/cart/clear/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification(data.message);
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+            } else {
+                showNotification(data.message, true);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Помилка при очищенні корзини', true);
+        });
+    }
+
+    // Перехід до оформлення замовлення
+    function proceedToCheckout() {
+        showNotification('Перехід до оформлення замовлення...');
+        // window.location.href = '/checkout/';
+    }
+
+    // Функція для отримання CSRF токена
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Додаємо обробники подій при завантаженні сторінки
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Cart page loaded');
+
+        // Додаємо обробники кліку для всіх кнопок
+        document.querySelectorAll('.quantity-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const dishId = this.closest('.cart-item').dataset.dishId;
+                const change = this.textContent.trim() === '+' ? 1 : -1;
+                updateQuantity(parseInt(dishId), change);
+            });
+        });
+
+        // Обробник для ручного вводу кількості
+        document.querySelectorAll('.quantity-input').forEach(input => {
+            input.addEventListener('change', function() {
+                const dishId = this.closest('.cart-item').dataset.dishId;
+                setQuantity(parseInt(dishId), parseInt(this.value));
+            });
+        });
+    });
+
+</script>
+</body>
+</html>
