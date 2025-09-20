@@ -1,0 +1,250 @@
+{% extends "includes/base.html" %}
+{% load static %}
+{% block content %}
+<!-- Time Selector -->
+<div style="max-width: 1200px; margin: 2rem auto; padding: 0 1rem;">
+    <div class="time-selector">
+        <div class="time-header">
+            👤 З собою <span class="time-badge">-20%</span>
+        </div>
+        <div class="time-display">З 11:00 до 20:30</div>
+    </div>
+</div>
+
+<!-- Main Container -->
+<div class="container_menu">
+    <!-- Left Sidebar -->
+    <aside class="sidebar" style="position: sticky; top: 20px; height: fit-content;">
+        <h3>⭐ Популярне</h3>
+
+        <div class="sidebar-section">
+            <p style="color: #6c757d; margin-bottom: 16px;">З собою:</p>
+            <h4>Меню</h4>
+            <ul class="category-list">
+                <li class="category-item">
+                    <a href="{% url 'restaurant:menu' %}" class="category-link {% if not selected_category %}active{% endif %}">Всі страви</a>
+                </li>
+                {% for category in categories %}
+                <li class="category-item">
+                    <a href="#category-{{ category.slug }}"
+                       class="category-link category-scroll-link"
+                       data-category="{{ category.slug }}">
+                        {{ category.name }}
+                        <span style="color: #6c757d; font-size: 12px; margin-left: 8px;">
+                            ({{ category.dishes_count }})
+                        </span>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="menu-content">
+        <div class="menu-header">
+            <h1 class="menu-title">Меню</h1>
+            {% if selected_category %}
+            <h2 class="category-title">{{ selected_category.name }}</h2>
+            {% else %}
+            <h2 class="category-title">Всі страви</h2>
+            {% endif %}
+
+            {% if search_query %}
+            <p style="color: #6c757d; margin: 10px 0;">Результати пошуку: "{{ search_query }}"</p>
+            {% endif %}
+        </div>
+
+        <!-- Popular Dishes Section -->
+        {% if not search_query and not selected_category and popular_dishes %}
+        <div style="margin-bottom: 40px;">
+            <h3 style="color: #FF5722; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                ⭐ Популярні страви
+            </h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                {% for dish in popular_dishes %}
+                <div class="dish-card" style="border: 2px solid #FF5722; border-radius: 12px; padding: 16px;">
+                    {% if dish.image %}
+                    <img src="{{ dish.image.url }}" alt="{{ dish.name }}" class="dish-image" style="width: 100%; height: 150px;">
+                    {% else %}
+                    <img src="{% static 'deps/images/Not found image.png' %}" alt="{{ dish.name }}" class="dish-image" style="width: 100%; height: 150px;">
+                    {% endif %}
+                    <div class="dish-info">
+                        <h4 class="dish-name" style="margin: 12px 0 8px 0;">
+                            {% if dish.is_new %}<span style="background: #28a745; color: white; font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-right: 8px;">НОВИНКА</span>{% endif %}
+                            <a href="{% url 'restaurant:dish_detail' dish.slug %}" style="text-decoration: none; color: inherit;">{{ dish.name }}</a>
+                        </h4>
+                        <p class="dish-description" style="font-size: 12px;">{{ dish.description|truncatewords:10 }}</p>
+                        <div class="dish-meta" style="margin: 8px 0;">
+                            <span class="dish-weight">🍽️ {{ dish.weight }}г</span>
+                        </div>
+                        <div class="dish-actions">
+                            <div class="dish-price">
+                                <span class="current-price">{{ dish.price }} ₴</span>
+                                {% if dish.old_price %}<span class="old-price">{{ dish.old_price }} ₴</span>{% endif %}
+                            </div>
+                            <button class="add-btn" data-dish-id="{{ dish.id }}">+ ДОДАТИ</button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Main Dishes List -->
+        {% if search_query or selected_category %}
+            <!-- Показуємо результати пошуку або страви вибраної категорії -->
+            {% for dish in dishes %}
+            <div class="dish-card">
+                {% if dish.image %}
+                <img src="{{ dish.image.url }}" alt="{{ dish.name }}" class="dish-image">
+                {% else %}
+                <img src="{% static 'deps/images/Not found image.png' %}" alt="{{ dish.name }}" class="dish-image">
+                {% endif %}
+                <div class="dish-info">
+                    <h3 class="dish-name">
+                        {% if dish.is_new %}<span style="background: #28a745; color: white; font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-right: 8px;">НОВИНКА</span>{% endif %}
+                        <a href="{% url 'restaurant:dish_detail' dish.slug %}" style="text-decoration: none; color: inherit;">{{ dish.name }}</a>
+                    </h3>
+                    <p class="dish-description">{{ dish.description }}</p>
+                    {% if dish.ingredients %}
+                    <p style="color: #6c757d; font-size: 12px; font-style: italic; margin: 8px 0;">{{ dish.ingredients }}</p>
+                    {% endif %}
+                    <div class="dish-actions">
+                        <div style="display: flex; gap: 16px;">
+                            <div class="dish-likes" data-dish-id="{{ dish.id }}" style="cursor: pointer;">❤️ {{ dish.likes }}</div>
+                            <div class="dish-likes">📤</div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div class="dish-price">
+                                <span class="current-price">{{ dish.price }} ₴</span>
+                                {% if dish.old_price %}<span class="old-price">{{ dish.old_price }} ₴</span>{% endif %}
+                                {% if dish.discount_percentage %}<span style="background: #FF5722; color: white; font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-left: 8px;">-{{ dish.discount_percentage }}%</span>{% endif %}
+                            </div>
+                            <button class="add-btn" data-dish-id="{{ dish.id }}">+ ДОДАТИ</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <!-- Показуємо всі страви згруповані по категоріях -->
+            {% regroup dishes by category as dishes_by_category %}
+            {% for category_group in dishes_by_category %}
+            <div id="category-{{ category_group.grouper.slug }}" class="category-section" style="margin-bottom: 40px;">
+                <h3 class="category-title" style="color: #FF5722; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e9ecef;">
+                    {{ category_group.grouper.name }}
+                </h3>
+                {% for dish in category_group.list %}
+                <div class="dish-card">
+                    {% if dish.image %}
+                    <img src="{{ dish.image.url }}" alt="{{ dish.name }}" class="dish-image">
+                    {% else %}
+                    <img src="{% static 'deps/images/Not found image.png' %}" alt="{{ dish.name }}" class="dish-image">
+                    {% endif %}
+                    <div class="dish-info">
+                        <h3 class="dish-name">
+                            {% if dish.is_new %}<span style="background: #28a745; color: white; font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-right: 8px;">НОВИНКА</span>{% endif %}
+                            <a href="{% url 'restaurant:dish_detail' dish.slug %}" style="text-decoration: none; color: inherit;">{{ dish.name }}</a>
+                        </h3>
+                        <p class="dish-description">{{ dish.description }}</p>
+                        {% if dish.ingredients %}
+                        <p style="color: #6c757d; font-size: 12px; font-style: italic; margin: 8px 0;">{{ dish.ingredients }}</p>
+                        {% endif %}
+                        <div class="dish-meta">
+                            <span class="dish-weight">🍽️ {{ dish.weight }}г</span>
+                            {% if dish.calories %}<span class="dish-weight">🔥 {{ dish.calories }} ккал</span>{% endif %}
+                            {% if dish.cooking_time %}<span class="dish-weight">⏱️ {{ dish.cooking_time }} хв</span>{% endif %}
+                        </div>
+                        <div class="dish-actions">
+                            <div style="display: flex; gap: 16px;">
+                                <div class="dish-likes" data-dish-id="{{ dish.id }}" style="cursor: pointer;">❤️ {{ dish.likes }}</div>
+                                <div class="dish-likes">📤</div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div class="dish-price">
+                                    <span class="current-price">{{ dish.price }} ₴</span>
+                                    {% if dish.old_price %}<span class="old-price">{{ dish.old_price }} ₴</span>{% endif %}
+                                    {% if dish.discount_percentage %}<span style="background: #FF5722; color: white; font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-left: 8px;">-{{ dish.discount_percentage }}%</span>{% endif %}
+                                </div>
+                                <button class="add-btn" data-dish-id="{{ dish.id }}">+ ДОДАТИ</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if dishes and not dishes|length %}
+        <div style="text-align: center; padding: 40px; color: #6c757d;">
+            <h3>Страви не знайдено</h3>
+            <p>Спробуйте змінити критерії пошуку</p>
+        </div>
+        {% endif %}
+    </main>
+
+    <!-- Right Sidebar -->
+    <aside class="right-sidebar">
+        <div class="search-box">
+            <form method="GET" action="{% url 'restaurant:menu' %}">
+                <input type="text" name="search" value="{{ search_query }}" placeholder="Пошук" class="search-input">
+                {% if selected_category %}
+                <input type="hidden" name="category" value="{{ selected_category.slug }}">
+                {% endif %}
+                <button type="submit" class="search-icon" style="background: none; border: none; cursor: pointer;">🔍</button>
+            </form>
+        </div>
+
+        <div class="info-section">
+            <h4>Інформація про заклад</h4>
+            <div class="info-item">
+                <span class="info-icon">📍</span>
+                <span>вулиця Щировська, 38, Львів</span>
+            </div>
+            <div class="info-item">
+                <span class="info-icon">📞</span>
+                <span>38096773864З</span>
+            </div>
+            <div class="info-item">
+                <span class="info-icon">⏰</span>
+                <span>11:00 - 23:00</span>
+            </div>
+        </div>
+
+        <button class="booking-btn">Бронювання</button>
+        <button class="feedback-btn">Надіслати відгук</button>
+    </aside>
+</div>
+
+<script>
+// Smooth scrolling для категорій
+document.addEventListener('DOMContentLoaded', function() {
+    const categoryLinks = document.querySelectorAll('.category-scroll-link');
+
+    categoryLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const categorySlug = this.getAttribute('data-category');
+            const targetElement = document.getElementById('category-' + categorySlug);
+
+            if (targetElement) {
+                // Видаляємо active з усіх посилань
+                categoryLinks.forEach(l => l.classList.remove('active'));
+                // Додаємо active до поточного
+                this.classList.add('active');
+
+                // Прокручуємо до елемента
+                targetElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}

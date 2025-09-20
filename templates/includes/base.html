@@ -9,15 +9,52 @@
     <link rel="stylesheet" href="{% static "deps/css/bootstrap/bootstrap.min.css" %}">
     <link rel="stylesheet" href="{% static "deps/css/my_css.css" %}">
     <title>Title</title>
+    <style>
+        {% block css %}
+
+        {% endblock %}
+    </style>
 </head>
 <body>
+    <header class="header">
+        <div class="header-container_menu">
+            <div class="logo">
+                <div class="logo-icon">🏔️</div>
+                <div class="logo-text">
+                    <h1>Гуцульський двір</h1>
+                    <p>Ресторан</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="cart-btn" id="cart-btn">
+                    🛒 <span id="cart-count">0</span> позиція за <span id="cart-total">0
+                </span> ₴
+                </button>
+                {% if user.is_authenticated %}
+                    <div class="user-btn" title="{{ users.username }}">👤</div>
+                {% else %}
+                    <a href="{% url 'account_login' %}" class="user-btn" title="Увійти">👤</a>
+                {% endif %}
+                <button class="menu-btn">☰</button>
+            </div>
+        </div>
+    </header>
 
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container_menu">
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="#" class="nav-link ">Головна</a></li>
+                <li class="nav-item"><a href="{% url 'dish:categories' %}" class="nav-link ">Меню</a></li>
+                <li class="nav-item"><a href="#" class="nav-link ">Бронювання</a></li>
+                <li class="nav-item"><a href="#" class="nav-link ">Залишити відгук</a></li>
+            </ul>
+        </div>
+    </nav>
 
         <div class="container">
             <div class="row mt-1">
-                <div class="col-lg-2">
-                    <!-- Порожній блок -->
-                </div>
+
                 <div class="col-lg-10">
                     <!-- Контент на сторінці -->
                     {% block content %}
@@ -29,8 +66,11 @@
     {% block footer %}
 
     {% endblock %}
- <script src="{% static "deps/js/jquery/jquery-3.7.0.min.js" %}"></script>
+    <script src="{% static "deps/js/jquery/jquery-3.7.0.min.js" %}"></script>
     <script src="{% static "deps/js/jquery-ajax.js" %}"></script>
     <script src="{% static "deps/js/bootstrap/bootstrap.bundle.min.js" %}"></script>
+    {% block script %}
+
+    {% endblock %}
 </body>
 </html>

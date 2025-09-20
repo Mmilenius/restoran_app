@@ -1,36 +1,776 @@
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-body {
-  background-color: #d3d3d3; /* бежевий колір */
-  height: 100%;
-}
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fa;
+            line-height: 1.5;
+        }
 
+        /* Header */
+        .header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-.dropdown-toggle::after {
-  content: none;
-}
+        .header-container_menu {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-.custom-shadow {
-  box-shadow: 5px 5px 25px 19px #000000;
-}
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-.product_id {
-  color: gray;
-  font-size: 15px;
-}
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #8B4513, #D2691E);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
 
-.badge.bg-warning.text-dark {
-  position: absolute;
-  top: 10px;
-  right: 5px;
-  z-index: 1;
-  padding: 5px 10px;
-  border-radius: 3px;
-  font-size: 1rem;
-  box-shadow: 2px 2px 15px 9px #000000;
-}
+        .logo-text h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: -2px;
+        }
 
-.badge-banner {
-  top: 80%;
-  border-radius: 15px;
-  font-size: 0.7rem;
-}
+        .logo-text p {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .cart-btn {
+            background: #FF5722;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .cart-btn:hover {
+            background: #E64A19;
+            transform: translateY(-1px);
+        }
+
+        .user-btn, .menu-btn {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .user-btn:hover, .menu-btn:hover {
+            background: #e9ecef;
+        }
+
+        /* Navigation */
+        .nav {
+            background: white;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .nav-container_menu {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #495057;
+            font-weight: 500;
+            padding: 16px 0;
+            display: block;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: #FF5722;
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #FF5722;
+        }
+
+        /* Time Selector */
+        .time-selector {
+            background: white;
+            border: 2px solid #FF5722;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 2rem auto;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+        }
+
+        .time-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #FF5722;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .time-badge {
+            background: #FF5722;
+            color: white;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .time-display {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        /* Main Container - ЗБІЛЬШЕНО НА 50PX */
+        .container_menu {
+            max-width: 1650px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            display: grid;
+            grid-template-columns: 280px 800px 370px;
+            gap: 2.5rem;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            height: fit-content;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar h3 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            font-size: 18px;
+            color: #2c3e50;
+        }
+
+        .sidebar-section {
+            margin-bottom: 24px;
+        }
+
+        .sidebar-section h4 {
+            color: #FF5722;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .category-list {
+            list-style: none;
+        }
+
+        .category-item {
+            margin-bottom: 8px;
+        }
+
+        .category-link {
+            text-decoration: none;
+            color: #495057;
+            padding: 10px 14px;
+            border-radius: 8px;
+            display: block;
+            transition: all 0.2s;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .category-link:hover, .category-link.active {
+            background: #FF5722;
+            color: white;
+            transform: translateX(4px);
+        }
+
+        /* Menu Content - ЗБІЛЬШЕНО */
+        .menu-content {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            min-height: 600px;
+        }
+
+        .menu-header {
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .menu-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .category-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        /* Популярні страви секція */
+        .popular-section {
+            margin-bottom: 40px;
+        }
+
+        .popular-section h3 {
+            color: #FF5722;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 22px;
+        }
+
+        .popular-dishes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .popular-dish-card {
+            border: 2px solid #FF5722;
+            border-radius: 12px;
+            padding: 20px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .popular-dish-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(255, 87, 34, 0.15);
+        }
+
+        .popular-dish-card .dish-image {
+            width: 100%;
+            height: 180px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin-bottom: 16px;
+        }
+
+        /* Category Section */
+        .category-section {
+            margin-bottom: 50px;
+        }
+
+        .category-section .category-title {
+            color: #FF5722;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e9ecef;
+            font-size: 24px;
+        }
+
+        /* Dish Cards */
+        .dish-card {
+            display: flex;
+            gap: 24px;
+            padding: 24px 0;
+            border-bottom: 1px solid #f8f9fa;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .dish-card:hover {
+            background: #f8f9fa;
+            margin: 0 -24px;
+            padding: 24px;
+            border-radius: 12px;
+            transform: translateX(4px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .dish-card:last-child {
+            border-bottom: none;
+        }
+
+        .dish-image {
+            width: 140px;
+            height: 140px;
+            border-radius: 12px;
+            object-fit: cover;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 12px;
+        }
+
+        /* Обработка ошибок загрузки изображений */
+        .dish-image:not([src]),
+        .dish-image[src=""],
+        .dish-image[src*="no-image"] {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+
+        .dish-image:not([src])::before,
+        .dish-image[src=""]::before,
+        .dish-image[src*="no-image"]::before {
+            content: '🍽️';
+            font-size: 32px;
+            color: #dee2e6;
+        }
+
+        /* Fallback для WebP и других форматов */
+        .dish-image {
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+
+        .dish-info {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .dish-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .dish-name a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .dish-name a:hover {
+            color: #FF5722;
+        }
+
+        .dish-description {
+            color: #6c757d;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .dish-ingredients {
+            color: #6c757d;
+            font-size: 12px;
+            font-style: italic;
+            margin-bottom: 12px;
+            opacity: 0.8;
+        }
+
+        .dish-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .dish-weight {
+            background: #f8f9fa;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .dish-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dish-interactions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .dish-likes {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #6c757d;
+            font-size: 14px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .dish-likes:hover {
+            color: #FF5722;
+        }
+
+        .dish-pricing {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .dish-price {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .current-price {
+            font-size: 22px;
+            font-weight: 700;
+            color: #FF5722;
+        }
+
+        .old-price {
+            font-size: 16px;
+            color: #6c757d;
+            text-decoration: line-through;
+        }
+
+        .discount-badge {
+            background: #FF5722;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .new-badge {
+            background: #28a745;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .add-btn {
+            background: #FF5722;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .add-btn:hover {
+            background: #E64A19;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 87, 34, 0.3);
+        }
+
+        /* Right Sidebar */
+        .right-sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            height: fit-content;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 20px;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 45px 14px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: #FF5722;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            font-size: 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .info-section {
+            margin-bottom: 24px;
+        }
+
+        .info-section h4 {
+            color: #2c3e50;
+            font-size: 16px;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .info-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .booking-btn {
+            width: 100%;
+            background: #FF5722;
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 12px;
+        }
+
+        .booking-btn:hover {
+            background: #E64A19;
+            transform: translateY(-1px);
+        }
+
+        .feedback-btn {
+            width: 100%;
+            background: transparent;
+            color: #6c757d;
+            border: 2px solid #e9ecef;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .feedback-btn:hover {
+            border-color: #FF5722;
+            color: #FF5722;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state h3 {
+            font-size: 24px;
+            margin-bottom: 12px;
+            color: #495057;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Category scroll highlighting */
+        .category-link.scroll-active {
+            background: #FFF3E0;
+            color: #FF5722;
+            border-left: 3px solid #FF5722;
+            padding-left: 11px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1400px) {
+            .container_menu {
+                max-width: 1300px;
+                grid-template-columns: 260px 1fr 350px;
+                gap: 2rem;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .container_menu {
+                grid-template-columns: 240px 1fr;
+                max-width: 100%;
+            }
+            .right-sidebar {
+                display: none;
+            }
+            .menu-content {
+                padding: 24px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container_menu {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .sidebar {
+                order: 2;
+                position: static;
+            }
+
+            .menu-content {
+                padding: 20px;
+            }
+
+            .nav-menu {
+                gap: 20px;
+            }
+
+            .dish-card {
+                flex-direction: column;
+                gap: 16px;
+                padding: 20px 0;
+            }
+
+            .dish-card:hover {
+                margin: 0;
+                padding: 20px 0;
+                transform: none;
+            }
+
+            .dish-image {
+                width: 100%;
+                height: 200px;
+            }
+
+            .dish-actions {
+                flex-direction: column;
+                gap: 12px;
+                align-items: flex-start;
+            }
+
+            .popular-dishes-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .menu-title {
+                font-size: 24px;
+            }
+
+            .category-title {
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .time-selector {
+                margin: 1rem;
+            }
+
+            .dish-card {
+                padding: 16px 0;
+            }
+
+            .menu-content {
+                padding: 16px;
+            }
+
+            .sidebar {
+                padding: 16px;
+            }
+        }

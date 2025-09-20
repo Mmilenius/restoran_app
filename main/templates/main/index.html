@@ -1,6 +1,551 @@
 {% extends "includes/base.html" %}
 {% load static %}
 
-{% block content %}
-    <h1 class="display-5">Ласкаво просимо до ресторану<strong> У Гуцула</strong>!</h1>
+
+    {% block css %}
+        :root {
+            --primary-color: #8B4513;
+            --secondary-color: #D2B48C;
+            --accent-color: #FFD700;
+            --dark-green: #2F4F2F;
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(139, 69, 19, 0.7), rgba(139, 69, 19, 0.7)),
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600"><rect fill="%234a5d23" width="1000" height="600"/><polygon fill="%235d7129" points="0,600 200,400 400,500 600,300 800,450 1000,350 1000,600"/><circle fill="%23d4af37" cx="150" cy="150" r="50" opacity="0.3"/><circle fill="%23daa520" cx="850" cy="100" r="30" opacity="0.4"/></svg>');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 120px 0;
+        }
+
+        .feature-card {
+            transition: transform 0.3s ease;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 3rem;
+        }
+
+        .btn-primary-custom {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 12px 30px;
+            font-weight: bold;
+        }
+
+        .btn-primary-custom:hover {
+            background-color: #6B3410;
+            border-color: #6B3410;
+        }
+
+        .contact-info {
+            background-color: var(--dark-green);
+            color: white;
+            padding: 60px 0;
+        }
+
+        .navbar-custom {
+            background-color: var(--primary-color) !important;
+        }
+
+        .navbar-custom .navbar-brand,
+        .navbar-custom .nav-link {
+            color: white !important;
+        }
+
+        .navbar-custom .nav-link:hover {
+            color: var(--accent-color) !important;
+        }
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            background-color: rgba(139, 69, 19, 0.3);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .icon-feature {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
 {% endblock %}
+{% block content %}
+<div class="custom-theme">
+    <!-- Головна секція -->
+    <section id="home" class="hero-section text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <h1 class="display-4 fw-bold mb-4">Ресторан "Гуцульський двір"</h1>
+                    <p class="lead mb-4">
+                        Шматочок справжньої України, чарівний світ Карпатських гір та давніх українських традицій
+                    </p>
+                    <p class="fs-5 mb-5">
+                        Автентика традиційної кухні з локальними продуктами та стародавніми рецептами
+                    </p>
+                    <div class="d-flex flex-column flex-md-row gap-3 justify-content-center">
+                        <a href="#menu" class="btn btn-primary-custom btn-lg">
+                            <i class="fas fa-utensils me-2"></i>Переглянути меню
+                        </a>
+                        <a href="tel:+380967738642" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-phone me-2"></i>Забронювати стіл
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Карусель страв -->
+    <section id="gallery" class="py-5 bg-light">
+        <div class="container">
+            <div id="dishCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#dishCarousel" data-bs-slide-to="0" class="active"></button>
+                    <button type="button" data-bs-target="#dishCarousel" data-bs-slide-to="1"></button>
+                    <button type="button" data-bs-target="#dishCarousel" data-bs-slide-to="2"></button>
+                    <button type="button" data-bs-target="#dishCarousel" data-bs-slide-to="3"></button>
+                </div>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <div class="row align-items-center">
+                            <div class="col-lg-6">
+                                <div class="p-5">
+                                    <div class="border-start border-warning border-5 ps-4">
+                                        <h3 class="section-title mb-4">Автентика традиційної кухні</h3>
+                                        <p class="lead mb-4">
+                                            «Гуцульський двір» – це, перш за все, шматочок справжньої України,
+                                            чарівний світ Карпатських гір, та давніх українських традицій.
+                                        </p>
+                                        <p class="mb-4">
+                                            Українська кухня, мангал, банкетні та весільні зали, альтанки на вулиці,
+                                            маємо все щоб кожному гостю було затишно та зручно.
+                                        </p>
+                                        <div class="mb-3">
+                                            <i class="fas fa-map-marker-alt text-warning me-2"></i>
+                                            <strong>Львів, вул.Щирецька, 36</strong>
+                                        </div>
+                                        <div class="mb-4">
+                                            <i class="fas fa-phone text-warning me-2"></i>
+                                            <a href="tel:+380967738642" class="text-decoration-none" style="color: var(--primary-color);">
+                                                <strong>096 773 8642</strong>
+                                            </a>
+                                        </div>
+                                        <div class="d-flex gap-2">
+                                            <a href="#" class="btn btn-primary btn-sm rounded-circle p-2">
+                                                <i class="fab fa-facebook-f"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-primary btn-sm rounded-circle p-2">
+                                                <i class="fab fa-instagram"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="text-center">
+                                    <div class="bg-secondary rounded" style="height: 400px; display: flex; align-items: center; justify-content: center;">
+                                        <div class="text-white">
+                                            <i class="fas fa-image fa-3x mb-3"></i>
+                                            <p>Фото страви 1</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="row align-items-center">
+                            <div class="col-lg-6">
+                                <div class="p-5">
+                                    <div class="border-start border-warning border-5 ps-4">
+                                        <h3 class="section-title mb-4">Найкращі традиційні страви</h3>
+                                        <p class="lead mb-4">
+                                            Відкрийте для себе неперевершений смак автентичної української кухні,
+                                            приготованої за старовинними рецептами наших предків.
+                                        </p>
+                                        <p class="mb-4">
+                                            Кожна страва - це подорож у минуле, де поєднуються традиції,
+                                            якість та неперевершений смак домашньої кухні.
+                                        </p>
+                                        <a href="#contact" class="btn btn-primary-custom">
+                                            <i class="fas fa-calendar-check me-2"></i>Забронювати стіл
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="text-center">
+                                    <div class="bg-secondary rounded" style="height: 400px; display: flex; align-items: center; justify-content: center;">
+                                        <div class="text-white">
+                                            <i class="fas fa-image fa-3x mb-3"></i>
+                                            <p>Фото страви 2</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="row align-items-center">
+                            <div class="col-lg-6">
+                                <div class="p-5">
+                                    <div class="border-start border-warning border-5 ps-4">
+                                        <h3 class="section-title mb-4">Свіжі локальні продукти</h3>
+                                        <p class="lead mb-4">
+                                            Використовуємо виключно свіжі продукти від місцевих фермерів
+                                            та виробників з Карпатського регіону.
+                                        </p>
+                                        <p class="mb-4">
+                                            Наша філософія - якість понад усе. Тому кожен інгредієент
+                                            ретельно відбирається для створення справжнього смаку України.
+                                        </p>
+                                        <a href="#menu" class="btn btn-primary-custom">
+                                            <i class="fas fa-utensils me-2"></i>Переглянути меню
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="text-center">
+                                    <div class="bg-secondary rounded" style="height: 400px; display: flex; align-items: center; justify-content: center;">
+                                        <div class="text-white">
+                                            <i class="fas fa-image fa-3x mb-3"></i>
+                                            <p>Фото страви 3</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="row align-items-center">
+                            <div class="col-lg-6">
+                                <div class="p-5">
+                                    <div class="border-start border-warning border-5 ps-4">
+                                        <h3 class="section-title mb-4">Атмосфера справжньої України</h3>
+                                        <p class="lead mb-4">
+                                            Поринути в автентичну атмосферу гуцульської культури,
+                                            де кожна деталь інтер'єру розповідає свою історію.
+                                        </p>
+                                        <p class="mb-4">
+                                            Наш ресторан - це не просто місце для їжі,
+                                            це культурний центр, де оживають давні традиції та звичаї.
+                                        </p>
+                                        <a href="#services" class="btn btn-primary-custom">
+                                            <i class="fas fa-heart me-2"></i>Наші послуги
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="text-center">
+                                    <div class="bg-secondary rounded" style="height: 400px; display: flex; align-items: center; justify-content: center;">
+                                        <div class="text-white">
+                                            <i class="fas fa-image fa-3x mb-3"></i>
+                                            <p>Фото страви 4</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#dishCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#dishCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Особливості ресторану -->
+    <section id="features" class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h2 class="section-title">Пориньте в світ гуцульської самобутності</h2>
+                </div>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="card feature-card h-100 text-center p-4">
+                        <div class="card-body">
+                            <i class="fas fa-scroll icon-feature"></i>
+                            <h4 class="card-title mb-3">Українська кухня</h4>
+                            <p class="card-text">
+                                Стародавні рецепти, що передаються з покоління в покоління, розшукувались численними гастротурами гуцульськими краями.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card feature-card h-100 text-center p-4">
+                        <div class="card-body">
+                            <i class="fas fa-seedling icon-feature"></i>
+                            <h4 class="card-title mb-3">Локальні продукти</h4>
+                            <p class="card-text">
+                                Використання продуктів вирощених на території України 100% надає страві того традиційного смаку, який знайомий з дитинства.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card feature-card h-100 text-center p-4">
+                        <div class="card-body">
+                            <i class="fas fa-home icon-feature"></i>
+                            <h4 class="card-title mb-3">Автентичний інтер'єр</h4>
+                            <p class="card-text">
+                                Передаємо дух української ідентичності нашим гостям. За дверима вам відкриється справжній музей гуцульського життя.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Послуги -->
+    <section id="services" class="py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h2 class="section-title">Наші послуги</h2>
+                </div>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="p-4">
+                        <i class="fas fa-fire icon-feature"></i>
+                        <h5 class="mt-3">Мангал</h5>
+                        <p>Страви на відкритому вогні з неповторним смаком</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="p-4">
+                        <i class="fas fa-glass-cheers icon-feature"></i>
+                        <h5 class="mt-3">Банкетні зали</h5>
+                        <p>Комфортні зали для корпоративних заходів</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="p-4">
+                        <i class="fas fa-heart icon-feature"></i>
+                        <h5 class="mt-3">Весільний зал</h5>
+                        <p>Створимо казкову атмосферу для вашого весілля</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="p-4">
+                        <i class="fas fa-umbrella icon-feature"></i>
+                        <h5 class="mt-3">Альтанки на вулиці</h5>
+                        <p>Відпочинок на свіжому повітрі серед природи</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Меню (попередній перегляд) -->
+    <section id="menu" class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h2 class="section-title">Наше меню</h2>
+                    <p class="lead mb-5">Автентичні страви традиційної української кухні</p>
+                </div>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-bowl-food icon-feature"></i>
+                            <h5 class="card-title">Перші страви</h5>
+                            <p class="card-text">Традиційні борщі, солянки та юшки за бабусиними рецептами</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-drumstick-bite icon-feature"></i>
+                            <h5 class="card-title">М'ясні страви</h5>
+                            <p class="card-text">Ковбаси, печеня та інші м'ясні делікатеси на мангалі</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-cookie-bite icon-feature"></i>
+                            <h5 class="card-title">Десерти</h5>
+                            <p class="card-text">Домашня випічка та солодощі за традиційними рецептами</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-12 text-center">
+                    <a href="#" class="btn btn-primary-custom btn-lg">
+                        <i class="fas fa-file-pdf me-2"></i>Повне меню (PDF)
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Контакти -->
+    <section id="contact" class="contact-info">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center mb-5">
+                    <h2 class="text-white">Контакти та бронювання</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-map-marker-alt fa-2x me-3 text-warning"></i>
+                        <div>
+                            <h5 class="mb-1">Адреса</h5>
+                            <p class="mb-0">Львів, вул. Щирецька, 36</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-phone fa-2x me-3 text-warning"></i>
+                        <div>
+                            <h5 class="mb-1">Телефон</h5>
+                            <p class="mb-0">
+                                <a href="tel:+380967738642" class="text-white text-decoration-none">
+                                    096 773 8642
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-clock fa-2x me-3 text-warning"></i>
+                        <div>
+                            <h5 class="mb-1">Режим роботи</h5>
+                            <p class="mb-0">Щодня з 10:00 до 23:00</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="bg-white p-4 rounded">
+                        <h5 class="text-dark mb-3">Забронювати стіл</h5>
+                        <form>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <input type="text" class="form-control" placeholder="Ваше ім'я" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <input type="tel" class="form-control" placeholder="Телефон" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <input type="date" class="form-control" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <input type="time" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <select class="form-select" required>
+                                    <option value="">Кількість гостей</option>
+                                    <option value="2">2 особи</option>
+                                    <option value="4">4 особи</option>
+                                    <option value="6">6 осіб</option>
+                                    <option value="8">8 осіб</option>
+                                    <option value="more">Більше 8 осіб</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary-custom w-100">
+                                <i class="fas fa-calendar-check me-2"></i>Забронювати
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <h5>Ресторан "Гуцульський двір"</h5>
+                    <p class="mb-0">Автентична українська кухня у Львові</p>
+                </div>
+                <div class="col-lg-6 text-lg-end">
+                    <div class="social-links">
+                        <a href="#" class="text-white me-3"><i class="fab fa-facebook fa-2x"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-instagram fa-2x"></i></a>
+                        <a href="tel:+380967738642" class="text-white"><i class="fas fa-phone fa-2x"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-3">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="mb-0">&copy; 2025 Ресторан "Гуцульський двір". Всі права захищені.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    {% endblock %}
+    {% block script %}
+    <script>
+        // Smooth scrolling для навігаційних посилань
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Активна навігація при скролі
+        window.addEventListener('scroll', function() {
+            let current = '';
+            const sections = document.querySelectorAll('section');
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+        </div>
+    {% endblock %}

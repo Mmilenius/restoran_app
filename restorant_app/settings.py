@@ -24,6 +24,7 @@ INSTALLED_APPS = [
 
     'main',
     'users',
+    'dish',
 ]
 
 MIDDLEWARE = [
@@ -58,8 +59,13 @@ WSGI_APPLICATION = 'restorant_app.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'restorant_app',
+        'USER': 'home',
+        'PASSWORD': '1234',
+        'HOST': 'localhost',
+        'PORT': '5432',
+
     }
 }
 
@@ -78,7 +84,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
-MEDIA_URL = '/media/'   # було Media_URL
+MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 INTERNAL_IPS = ["127.0.0.1"]
