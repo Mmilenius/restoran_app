@@ -1,0 +1,37 @@
+{% extends "includes/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container" style="max-width: 600px; margin: 3rem auto; text-align: center;">
+    <div class="success-icon" style="font-size: 4rem; color: #28a745; margin-bottom: 1rem;">
+        ✅
+    </div>
+    
+    <h1>Бронювання успішно створено!</h1>
+    
+    <div class="booking-details" style="background: #f8f9fa; padding: 2rem; border-radius: 12px; margin: 2rem 0;">
+        <h3>Деталі бронювання</h3>
+        <p><strong>Ім'я:</strong> {{ booking.full_name }}</p>
+        <p><strong>Телефон:</strong> {{ booking.phone }}</p>
+        <p><strong>Дата:</strong> {{ booking.date }}</p>
+        <p><strong>Час:</strong> {{ booking.time }}</p>
+        <p><strong>Тривалість:</strong> {{ booking.duration }} год.</p>
+        <p><strong>Гостей:</strong> {{ booking.guests }} ос.</p>
+        <p><strong>Зона:</strong> {{ booking.get_zone_display }}</p>
+        {% if booking.notes %}
+        <p><strong>Примітки:</strong> {{ booking.notes }}</p>
+        {% endif %}
+    </div>
+
+    <p>Ми зв'яжемося з вами за номером <strong>{{ booking.phone }}</strong> для підтвердження бронювання.</p>
+    
+    <div class="actions" style="margin-top: 2rem;">
+        <a href="{% url 'dish:menu' %}" class="btn btn-primary">
+            Перейти до меню
+        </a>
+        <a href="{% url 'booking:booking' %}" class="btn btn-outline-secondary">
+            Нове бронювання
+        </a>
+    </div>
+</div>
+{% endblock %}
