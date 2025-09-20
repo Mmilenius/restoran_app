@@ -420,6 +420,7 @@
                 <button class="checkout-btn" onclick="proceedToCheckout()">
                     Оформити замовлення
                 </button>
+
                 <button class="clear-cart-btn" onclick="clearCart()">
                     Очистити корзину
                 </button>
@@ -437,7 +438,8 @@
     <div class="notification" id="notification"></div>
 
     <script>
-    // Функція для показу сповіщень
+
+        // Функція для показу сповіщень
     function showNotification(message, isError = false) {
         const notification = document.getElementById('notification');
         notification.textContent = message;
@@ -647,7 +649,9 @@
             });
         });
     });
-
+            function proceedToCheckout() {
+            window.location.href = "{% url 'orders:create_order' %}";
+        }
 </script>
 </body>
 </html>

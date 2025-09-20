@@ -1,0 +1,31 @@
+{% extends "includes/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container" style="max-width: 600px; margin: 3rem auto; text-align: center;">
+    <div class="success-icon" style="font-size: 4rem; color: #28a745; margin-bottom: 1rem;">
+        ✅
+    </div>
+    
+    <h1>Замовлення успішно створено!</h1>
+    
+    <div class="order-details" style="background: #f8f9fa; padding: 2rem; border-radius: 12px; margin: 2rem 0;">
+        <h3>Деталі замовлення</h3>
+        <p><strong>Номер замовлення:</strong> #{{ order.id }}</p>
+        <p><strong>Номер столика:</strong> {{ order.table_number }}</p>
+        <p><strong>Загальна сума:</strong> {{ order.total_price }} ₴</p>
+        <p><strong>Статус:</strong> {{ order.get_status_display }}</p>
+    </div>
+
+    <p>Ваше замовлення прийнято в обробку. Очікуйте на столику {{ order.table_number }}</p>
+    
+    <div class="actions" style="margin-top: 2rem;">
+        <a href="{% url 'dish:menu' %}" class="btn btn-primary">
+            Повернутися до меню
+        </a>
+        <a href="{% url 'orders:order_list' %}" class="btn btn-outline-secondary">
+            Мої замовлення
+        </a>
+    </div>
+</div>
+{% endblock %}

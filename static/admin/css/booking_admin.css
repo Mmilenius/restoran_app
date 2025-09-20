@@ -1,0 +1,40 @@
+/* Стилі для адмін-панелі бронювань */
+.badge {
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.badge.bg-primary { background-color: #007bff; }
+.badge.bg-success { background-color: #28a745; }
+.badge.bg-warning { background-color: #ffc107; color: #212529; }
+.badge.bg-danger { background-color: #dc3545; }
+.badge.bg-info { background-color: #17a2b8; }
+.badge.bg-secondary { background-color: #6c757d; }
+
+.btn-group .btn {
+    padding: 2px 6px;
+    font-size: 12px;
+    margin-right: 2px;
+    border-radius: 3px;
+}
+
+.btn-group .btn-info { background-color: #17a2b8; border-color: #17a2b8; }
+.btn-group .btn-danger { background-color: #dc3545; border-color: #dc3545; }
+
+/* Покращення вигляду форм */
+.field-end_time_display {
+    font-weight: bold;
+    color: #495057;
+}
+
+/* Стилі для фільтрів */
+.selector {
+    margin-bottom: 15px;
+}
+
+.selector h2 {
+    font-size: 14px;
+    margin-bottom: 8px;
+}

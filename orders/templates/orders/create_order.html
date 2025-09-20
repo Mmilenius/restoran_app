@@ -1,0 +1,95 @@
+{% extends "includes/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container" style="max-width: 800px; margin: 2rem auto;">
+    <div class="order-header" style="text-align: center; margin-bottom: 2rem;">
+        <h1>Оформлення замовлення</h1>
+        <p>Заповніть інформацію для завершення замовлення</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Інформація про замовлення</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" id="order-form">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.table_number.id_for_label }}" class="form-label">
+                                Номер столика *
+                            </label>
+                            {{ form.table_number }}
+                            {% if form.table_number.errors %}
+                                <div class="text-danger">{{ form.table_number.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.notes.id_for_label }}" class="form-label">
+                                Додаткові примітки
+                            </label>
+                            {{ form.notes }}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            Підтвердити замовлення
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Ваше замовлення</h3>
+                </div>
+                <div class="card-body">
+                    <div class="order-summary">
+                        <p><strong>Кількість страв:</strong> {{ cart_summary.total_items }}</p>
+                        <p><strong>Загальна сума:</strong> {{ cart_summary.total_price }} ₴</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('order-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const tableNumber = formData.get('table_number');
+    const notes = formData.get('notes');
+    
+    fetch('/orders/api/create/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({
+            table_number: parseInt(tableNumber),
+            notes: notes
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = data.redirect_url;
+        } else {
+            alert('Помилка: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Сталася помилка при оформленні замовлення');
+    });
+});
+</script>
+{% endblock %}
