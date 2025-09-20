@@ -69,6 +69,12 @@ class Order(models.Model):
         from django.urls import reverse
         return reverse('admin:orders_order_change', args=[str(self.id)])
 
+    def get_items_count(self):
+        return self.items.count()
+
+    def get_first_items(self, limit=2):
+        return self.items.all()[:limit]
+
 class OrderItem(models.Model):
     order = models.ForeignKey(
         Order,

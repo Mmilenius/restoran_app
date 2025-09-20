@@ -121,3 +121,6 @@ class Booking(models.Model):
                 return False
 
         return True
+
+    def get_status_class(self):
+        return f"status-{self.status}"

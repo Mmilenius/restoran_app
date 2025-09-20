@@ -1,68 +1,289 @@
 {% extends 'includes/base.html' %}
 {% load static %}
 
-{% block content %}
-<div class="container mt-5">
-    <div class="row">
-        <!-- Профіль -->
-        <div class="col-md-5">
-            <div class="bg-white p-4 mb-4 mx-2 rounded custom-shadow">
-                <h3 class="text-center mb-4">Мій профіль</h3>
+{% block css %}
+<style>
+.profile-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
 
-                <div class="text-center mb-3">
+.profile-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    margin-bottom: 2rem;
+}
+
+.profile-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #FF5722;
+    margin-bottom: 1rem;
+}
+
+.profile-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+    border: 1px solid #e9ecef;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #FF5722;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.section-title {
+    color: #2c3e50;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #FF5722;
+}
+
+.booking-card, .order-card {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.booking-card:hover, .order-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.booking-status, .order-status {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.status-pending { background: #FFF3CD; color: #856404; }
+.status-confirmed { background: #D1ECF1; color: #0C5460; }
+.status-preparing { background: #D1E7FF; color: #084298; }
+.status-ready { background: #D4EDDA; color: #155724; }
+.status-completed { background: #E2E3E5; color: #383D41; }
+.status-cancelled { background: #F8D7DA; color: #721C24; }
+
+.form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 14px;
+}
+
+.form-control:focus {
+    border-color: #FF5722;
+    box-shadow: 0 0 0 0.2rem rgba(255, 87, 34, 0.25);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #FF5722, #FF7043);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #E64A19, #FF5722);
+    transform: translateY(-2px);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: #6c757d;
+}
+
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #dee2e6;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <!-- Заголовок -->
+    <div class="profile-header">
+        <h1 style="color: #2c3e50; margin-bottom: 0.5rem;">Мій профіль</h1>
+        <p style="color: #6c757d;">Керуйте своїм обліковим записом та переглядайте історію</p>
+    </div>
+
+    <div class="row">
+        <!-- Ліва колонка - Статистика та форма -->
+        <div class="col-md-5">
+            <!-- Статистика -->
+            <div class="profile-card">
+                <div class="text-center mb-4">
                     {% if user.image %}
-                        <img src="{{ user.image.url }}" class="img-fluid rounded-circle" style="max-width: 150px;" alt="Аватар">
+                    <img src="{{ user.image.url }}" class="profile-avatar" alt="Аватар">
                     {% else %}
-                        <img src="{% static 'deps/images/baseavatar.jpg' %}" class="img-fluid rounded-circle" style="max-width: 150px;" alt="Аватар">
+                    <img src="{% static 'deps/images/baseavatar.svg' %}" class="profile-avatar" alt="Аватар">
                     {% endif %}
+                    <h3 style="color: #2c3e50; margin-bottom: 0.2rem;">{{ user.get_full_name }}</h3>
+                    <p style="color: #6c757d; margin-bottom: 0;">@{{ user.username }}</p>
                 </div>
+
+                <div class="profile-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">{{ bookings_count }}</div>
+                        <div class="stat-label">Бронювань</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">{{ orders_count }}</div>
+                        <div class="stat-label">Замовлень</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Форма редагування профілю -->
+            <div class="profile-card">
+                <h3 class="section-title">Редагувати профіль</h3>
 
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ form.non_field_errors }}
 
                     <div class="mb-3">
-                        <label for="{{ form.image.id_for_label }}" class="form-label">Аватар</label>
+                        <label class="form-label">Аватар</label>
                         {{ form.image }}
                         {{ form.image.errors }}
                     </div>
 
-                    <div class="mb-3">
-                        <label for="{{ form.first_name.id_for_label }}" class="form-label">Ім’я</label>
-                        {{ form.first_name }}
-                        {{ form.first_name.errors }}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Ім'я</label>
+                            {{ form.first_name }}
+                            {{ form.first_name.errors }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Прізвище</label>
+                            {{ form.last_name }}
+                            {{ form.last_name.errors }}
+                        </div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="{{ form.last_name.id_for_label }}" class="form-label">Прізвище</label>
-                        {{ form.last_name }}
-                        {{ form.last_name.errors }}
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="{{ form.username.id_for_label }}" class="form-label">Ім’я користувача</label>
+                        <label class="form-label">Ім'я користувача</label>
                         {{ form.username }}
                         {{ form.username.errors }}
                     </div>
 
                     <div class="mb-3">
-                        <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+                        <label class="form-label">Email</label>
                         {{ form.email }}
                         {{ form.email.errors }}
                     </div>
 
                     <div class="mb-3">
-                        <label for="{{ form.phone_number.id_for_label }}" class="form-label">Телефон</label>
+                        <label class="form-label">Телефон</label>
                         {{ form.phone_number }}
                         {{ form.phone_number.errors }}
                     </div>
 
-                    <button type="submit" class="btn btn-dark w-100">Зберегти</button>
+                    <button type="submit" class="btn btn-primary w-100">
+                        💾 Зберегти зміни
+                    </button>
                 </form>
             </div>
         </div>
 
+        <!-- Права колонка - Історія -->
+        <div class="col-md-7">
+            <!-- Останні бронювання -->
+            <div class="profile-card">
+                <h3 class="section-title">🎯 Останні бронювання</h3>
 
+                {% if user_bookings %}
+                    {% for booking in user_bookings %}
+                    <div class="booking-card">
+                        <span class="booking-status status-{{ booking.status }}">
+                            {{ booking.get_status_display }}
+                        </span>
+                        <h4 style="color: #2c3e50; margin-bottom: 0.5rem;">{{ booking.date }} о {{ booking.time }}</h4>
+                        <p style="color: #6c757d; margin-bottom: 0.5rem;">
+                            🏷️ {{ booking.get_zone_display }} | 👥 {{ booking.guests }} гостей | ⏱️ {{ booking.duration }} год.
+                        </p>
+                        <p style="color: #6c757d; margin-bottom: 0; font-size: 0.9rem;">
+                            📞 {{ booking.phone }}
+                        </p>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <div>📅</div>
+                        <h4>Немає бронювань</h4>
+                        <p>Ви ще не робили бронювань</p>
+                        <a href="{% url 'booking:booking' %}" class="btn btn-primary">Забронювати столик</a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Останні замовлення -->
+            <div class="profile-card">
+                <h3 class="section-title">🍽️ Останні замовлення</h3>
+
+                {% if user_orders %}
+                    {% for order in user_orders %}
+                    <div class="order-card">
+                        <span class="order-status status-{{ order.status }}">
+                            {{ order.get_status_display }}
+                        </span>
+                        <h4 style="color: #2c3e50; margin-bottom: 0.5rem;">Замовлення #{{ order.id }}</h4>
+                        <p style="color: #6c757d; margin-bottom: 0.5rem;">
+                            🏷️ Столик {{ order.table_number }} | 💰 {{ order.total_price }} ₴
+                        </p>
+                        <p style="color: #6c757d; margin-bottom: 0; font-size: 0.9rem;">
+                            📅 {{ order.created_at|date:"d.m.Y H:i" }}
+                        </p>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <div>🛒</div>
+                        <h4>Немає замовлень</h4>
+                        <p>Ви ще не робили замовлень</p>
+                        <a href="{% url 'dish:menu' %}" class="btn btn-primary">Перейти до меню</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

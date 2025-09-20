@@ -6,6 +6,9 @@ from django.utils.decorators import method_decorator
 from django.urls import reverse
 from django.views import View
 from django.views.generic import TemplateView
+from booking.models import Booking
+from orders.models import Order
+
 
 # Залишаємо тільки logout view, оскільки login/signup будуть через AllAuth
 @method_decorator(login_required, name='dispatch')
@@ -15,12 +18,21 @@ class UserLogoutView(View):
         auth.logout(request)
         return redirect(reverse('main:index'))
 
+
 # View для підтвердження email
 class EmailConfirmationSentView(TemplateView):
     template_name = 'account/verification_sent.html'
 
+
 @login_required
 def profile(request):
+    # Останні бронювання користувача
+    user_bookings = Booking.objects.filter(user=request.user).order_by('-created_at')[:5]
+
+    # Останні замовлення користувача
+    user_orders = Order.objects.filter(user=request.user).select_related('cart').prefetch_related('items').order_by(
+        '-created_at')[:5]
+
     if request.method == "POST":
         form = ProfileForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
@@ -32,5 +44,9 @@ def profile(request):
 
     context = {
         "form": form,
+        "user_bookings": user_bookings,
+        "user_orders": user_orders,
+        "bookings_count": Booking.objects.filter(user=request.user).count(),
+        "orders_count": Order.objects.filter(user=request.user).count(),
     }
     return render(request, "users/profile.html", context)
