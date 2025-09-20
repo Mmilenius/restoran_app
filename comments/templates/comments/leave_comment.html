@@ -1,0 +1,68 @@
+{% extends "includes/base.html" %}
+{% load static %}
+
+{% block css %}
+
+    .btn-submit {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background-color: #FF5722; /* помаранчевий */
+        color: white;
+        font-weight: bold;
+        padding: 12px 28px;
+        border-radius: 12px;
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    .btn-submit:hover {
+        background-color: #e64a19;
+        color: #fff;
+    }
+    .btn-submit i {
+        font-size: 18px;
+    }
+
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow p-4">
+        <h2 class="text-center mb-4">Оцініть нас, будь ласка!</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label class="form-label">Страви:</label>
+                <input type="number" name="food_rating" min="1" max="5" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Сервіс:</label>
+                <input type="number" name="service_rating" min="1" max="5" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Коментар:</label>
+                <textarea name="text" rows="3" class="form-control" placeholder="Ваш відгук..."></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Контакт (необов'язково):</label>
+                <input type="text" name="contact" class="form-control" placeholder="Ваш email або телефон">
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn-submit">
+                    <i class="bi bi-send-fill"></i> Надіслати відгук
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
