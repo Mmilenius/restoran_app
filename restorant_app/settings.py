@@ -12,6 +12,8 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.apple',
+    'allauth.socialaccount.providers.github',
     'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -81,7 +83,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LANGUAGE_CODE = 'uk'  # правильне значення для української
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Kiev'
 USE_I18N = True
 USE_TZ = True
 
@@ -139,7 +141,15 @@ SOCIALACCOUNT_PROVIDERS = {
             'access_type': 'online',
         },
         'OAUTH_PKCE_ENABLED': True,
-    }
+    },
+    'apple': {
+        'SCOPE': ['name', 'email'],
+        'AUTH_PARAMS': {'response_mode': 'form_post'},
+    },
+    'github': {
+        'SCOPE': ['user', 'user:email'],
+        'AUTH_PARAMS': {'allow_signup': 'true'},
+    },
 }
 # Додаткові AllAuth налаштування
 ACCOUNT_FORMS = {
