@@ -187,7 +187,7 @@
             margin: 0 auto;
             padding: 2rem 1rem;
             display: grid;
-            grid-template-columns: 280px 800px 370px;
+            grid-template-columns: 280px 700px 370px;
             gap: 2.5rem;
         }
 

@@ -1,288 +1,173 @@
 {% extends 'includes/base.html' %}
 {% load static %}
 
-{% block css %}
-<style>
-.profile-container {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-}
-
-.profile-card {
-    background: white;
-    border-radius: 16px;
-    padding: 2rem;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    margin-bottom: 2rem;
-}
-
-.profile-header {
-    text-align: center;
-    margin-bottom: 2rem;
-}
-
-.profile-avatar {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 4px solid #FF5722;
-    margin-bottom: 1rem;
-}
-
-.profile-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
-}
-
-.stat-card {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    padding: 1.5rem;
-    border-radius: 12px;
-    text-align: center;
-    border: 1px solid #e9ecef;
-}
-
-.stat-number {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #FF5722;
-    margin-bottom: 0.5rem;
-}
-
-.stat-label {
-    color: #6c757d;
-    font-size: 0.9rem;
-}
-
-.section-title {
-    color: #2c3e50;
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid #FF5722;
-}
-
-.booking-card, .order-card {
-    background: white;
-    border: 1px solid #e9ecef;
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 1rem;
-    transition: all 0.3s ease;
-}
-
-.booking-card:hover, .order-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-}
-
-.booking-status, .order-status {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-}
-
-.status-pending { background: #FFF3CD; color: #856404; }
-.status-confirmed { background: #D1ECF1; color: #0C5460; }
-.status-preparing { background: #D1E7FF; color: #084298; }
-.status-ready { background: #D4EDDA; color: #155724; }
-.status-completed { background: #E2E3E5; color: #383D41; }
-.status-cancelled { background: #F8D7DA; color: #721C24; }
-
-.form-control {
-    border: 2px solid #e9ecef;
-    border-radius: 8px;
-    padding: 12px;
-    font-size: 14px;
-}
-
-.form-control:focus {
-    border-color: #FF5722;
-    box-shadow: 0 0 0 0.2rem rgba(255, 87, 34, 0.25);
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, #FF5722, #FF7043);
-    border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.btn-primary:hover {
-    background: linear-gradient(135deg, #E64A19, #FF5722);
-    transform: translateY(-2px);
-}
-
-.empty-state {
-    text-align: center;
-    padding: 3rem;
-    color: #6c757d;
-}
-
-.empty-state i {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    color: #dee2e6;
-}
-</style>
-{% endblock %}
-
 {% block content %}
-<div class="profile-container">
-    <!-- Заголовок -->
-    <div class="profile-header">
-        <h1 style="color: #2c3e50; margin-bottom: 0.5rem;">Мій профіль</h1>
-        <p style="color: #6c757d;">Керуйте своїм обліковим записом та переглядайте історію</p>
+<div class="max-w-6xl mx-auto px-4 py-8">
+
+    <div class="text-center mb-10">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Мій профіль</h1>
+        <p class="text-gray-500">Керуйте своїм обліковим записом та переглядайте історію</p>
     </div>
 
-    <div class="row">
-        <!-- Ліва колонка - Статистика та форма -->
-        <div class="col-md-5">
-            <!-- Статистика -->
-            <div class="profile-card">
-                <div class="text-center mb-4">
-                    {% if user.image %}
-                    <img src="{{ user.image.url }}" class="profile-avatar" alt="Аватар">
-                    {% else %}
-                    <img src="{% static 'deps/images/baseavatar.svg' %}" class="profile-avatar" alt="Аватар">
-                    {% endif %}
-                    <h3 style="color: #2c3e50; margin-bottom: 0.2rem;">{{ user.get_full_name }}</h3>
-                    <p style="color: #6c757d; margin-bottom: 0;">@{{ user.username }}</p>
-                </div>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                <div class="profile-stats">
-                    <div class="stat-card">
-                        <div class="stat-number">{{ bookings_count }}</div>
-                        <div class="stat-label">Бронювань</div>
+        <div class="lg:col-span-1 space-y-6">
+
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 text-center">
+                <div class="relative inline-block mb-4">
+                    {% if user.image %}
+                    <img src="{{ user.image.url }}" class="w-32 h-32 rounded-full object-cover border-4 border-primary shadow-md mx-auto">
+                    {% else %}
+                    <img src="{% static 'deps/images/baseavatar.svg' %}" class="w-32 h-32 rounded-full object-cover border-4 border-primary shadow-md mx-auto bg-gray-50">
+                    {% endif %}
+                </div>
+                <h3 class="text-xl font-bold text-gray-900">{{ user.get_full_name|default:user.username }}</h3>
+                <p class="text-gray-500 text-sm mb-6">@{{ user.username }}</p>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                        <div class="text-2xl font-bold text-primary">{{ bookings_count|default:"0" }}</div>
+                        <div class="text-xs text-gray-500 uppercase font-medium">Бронювань</div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-number">{{ orders_count }}</div>
-                        <div class="stat-label">Замовлень</div>
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                        <div class="text-2xl font-bold text-primary">{{ orders_count|default:"0" }}</div>
+                        <div class="text-xs text-gray-500 uppercase font-medium">Замовлень</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Форма редагування профілю -->
-            <div class="profile-card">
-                <h3 class="section-title">Редагувати профіль</h3>
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-6 border-b-2 border-primary pb-2 inline-block">Редагувати профіль</h3>
 
-                <form method="post" enctype="multipart/form-data">
+                <form method="post" enctype="multipart/form-data" class="
+                    [&_input]:w-full [&_input]:border [&_input]:border-gray-300 [&_input]:rounded-xl [&_input]:px-4 [&_input]:py-2 [&_input]:focus:ring-2 [&_input]:focus:ring-primary [&_input]:focus:border-primary [&_input]:transition [&_input]:bg-gray-50
+                    [&_input[type='file']]:p-2 [&_input[type='file']]:bg-white
+                ">
                     {% csrf_token %}
-                    {{ form.non_field_errors }}
+                    {% if form.non_field_errors %}
+                        <div class="bg-red-50 text-red-500 p-3 rounded-lg mb-4 text-sm">{{ form.non_field_errors }}</div>
+                    {% endif %}
 
-                    <div class="mb-3">
-                        <label class="form-label">Аватар</label>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-medium mb-1 text-sm">Аватар</label>
                         {{ form.image }}
-                        {{ form.image.errors }}
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Ім'я</label>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-1 text-sm">Ім'я</label>
                             {{ form.first_name }}
-                            {{ form.first_name.errors }}
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Прізвище</label>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-1 text-sm">Прізвище</label>
                             {{ form.last_name }}
-                            {{ form.last_name.errors }}
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Ім'я користувача</label>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-medium mb-1 text-sm">Ім'я користувача</label>
                         {{ form.username }}
-                        {{ form.username.errors }}
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Email</label>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-medium mb-1 text-sm">Email</label>
                         {{ form.email }}
-                        {{ form.email.errors }}
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Телефон</label>
+                    <div class="mb-6">
+                        <label class="block text-gray-700 font-medium mb-1 text-sm">Телефон</label>
                         {{ form.phone_number }}
-                        {{ form.phone_number.errors }}
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100">
-                        💾 Зберегти зміни
+                    <button type="submit" class="w-full bg-primary hover:bg-[#6B3410] text-white font-bold py-3 rounded-xl shadow-md transition flex justify-center items-center gap-2">
+                        <i class="fas fa-save"></i> Зберегти зміни
                     </button>
                 </form>
             </div>
         </div>
 
-        <!-- Права колонка - Історія -->
-        <div class="col-md-7">
-            <!-- Останні бронювання -->
-            <div class="profile-card">
-                <h3 class="section-title">🎯 Останні бронювання</h3>
+        <div class="lg:col-span-2 space-y-6">
+
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
+                <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2 border-b border-gray-100 pb-4">
+                    🎯 Останні бронювання
+                </h3>
 
                 {% if user_bookings %}
+                    <div class="space-y-4">
                     {% for booking in user_bookings %}
-                    <div class="booking-card">
-                        <span class="booking-status status-{{ booking.status }}">
-                            {{ booking.get_status_display }}
-                        </span>
-                        <h4 style="color: #2c3e50; margin-bottom: 0.5rem;">{{ booking.date }} о {{ booking.time }}</h4>
-                        <p style="color: #6c757d; margin-bottom: 0.5rem;">
-                            🏷️ {{ booking.get_zone_display }} | 👥 {{ booking.guests }} гостей | ⏱️ {{ booking.duration }} год.
-                        </p>
-                        <p style="color: #6c757d; margin-bottom: 0; font-size: 0.9rem;">
-                            📞 {{ booking.phone }}
-                        </p>
-                    </div>
+                        <div class="bg-gray-50 border border-gray-200 rounded-xl p-5 hover:shadow-md transition">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-bold text-lg text-gray-900">{{ booking.date }} о {{ booking.time }}</h4>
+                                <span class="px-3 py-1 text-xs font-bold rounded-full uppercase
+                                    {% if booking.status == 'pending' %}bg-yellow-100 text-yellow-800
+                                    {% elif booking.status == 'confirmed' %}bg-blue-100 text-blue-800
+                                    {% elif booking.status == 'completed' %}bg-green-100 text-green-800
+                                    {% elif booking.status == 'cancelled' %}bg-red-100 text-red-800
+                                    {% else %}bg-gray-200 text-gray-800{% endif %}">
+                                    {{ booking.get_status_display }}
+                                </span>
+                            </div>
+                            <div class="flex flex-wrap gap-4 text-sm text-gray-600">
+                                <span>🏷️ {{ booking.get_zone_display }}</span>
+                                <span>👥 {{ booking.guests }} гостей</span>
+                                <span>⏱️ {{ booking.duration }} год.</span>
+                                <span>📞 {{ booking.phone }}</span>
+                            </div>
+                        </div>
                     {% endfor %}
+                    </div>
                 {% else %}
-                    <div class="empty-state">
-                        <div>📅</div>
-                        <h4>Немає бронювань</h4>
-                        <p>Ви ще не робили бронювань</p>
-                        <a href="{% url 'booking:booking' %}" class="btn btn-primary">Забронювати столик</a>
+                    <div class="text-center py-10 bg-gray-50 rounded-xl border border-dashed border-gray-300">
+                        <div class="text-4xl mb-3 opacity-50">📅</div>
+                        <h4 class="text-lg font-bold text-gray-700 mb-1">Немає бронювань</h4>
+                        <p class="text-gray-500 mb-4">Ви ще не бронювали столики у нашому ресторані.</p>
+                        <a href="{% url 'booking:booking' %}" class="inline-block bg-primary text-white font-bold py-2 px-6 rounded-lg hover:bg-[#6B3410] transition">Забронювати</a>
                     </div>
                 {% endif %}
             </div>
 
-            <!-- Останні замовлення -->
-            <div class="profile-card">
-                <h3 class="section-title">🍽️ Останні замовлення</h3>
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
+                <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2 border-b border-gray-100 pb-4">
+                    🍽️ Останні замовлення
+                </h3>
 
                 {% if user_orders %}
+                    <div class="space-y-4">
                     {% for order in user_orders %}
-                    <div class="order-card">
-                        <span class="order-status status-{{ order.status }}">
-                            {{ order.get_status_display }}
-                        </span>
-                        <h4 style="color: #2c3e50; margin-bottom: 0.5rem;">Замовлення #{{ order.id }}</h4>
-                        <p style="color: #6c757d; margin-bottom: 0.5rem;">
-                            🏷️ Столик {{ order.table_number }} | 💰 {{ order.total_price }} ₴
-                        </p>
-                        <p style="color: #6c757d; margin-bottom: 0; font-size: 0.9rem;">
-                            📅 {{ order.created_at|date:"d.m.Y H:i" }}
-                        </p>
-                    </div>
+                        <div class="bg-gray-50 border border-gray-200 rounded-xl p-5 hover:shadow-md transition">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-bold text-lg text-gray-900">Замовлення #{{ order.id }}</h4>
+                                <span class="px-3 py-1 text-xs font-bold rounded-full uppercase
+                                    {% if order.status == 'pending' %}bg-yellow-100 text-yellow-800
+                                    {% elif order.status == 'preparing' %}bg-blue-100 text-blue-800
+                                    {% elif order.status == 'ready' %}bg-green-100 text-green-800
+                                    {% elif order.status == 'completed' %}bg-gray-200 text-gray-800
+                                    {% elif order.status == 'cancelled' %}bg-red-100 text-red-800
+                                    {% else %}bg-gray-200 text-gray-800{% endif %}">
+                                    {{ order.get_status_display }}
+                                </span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm">
+                                <div class="text-gray-600">
+                                    <span class="mr-4">🏷️ Столик: <strong>{{ order.table_number }}</strong></span>
+                                    <span>📅 {{ order.created_at|date:"d.m.Y H:i" }}</span>
+                                </div>
+                                <div class="text-lg font-bold text-primary">{{ order.total_price }} ₴</div>
+                            </div>
+                        </div>
                     {% endfor %}
+                    </div>
                 {% else %}
-                    <div class="empty-state">
-                        <div>🛒</div>
-                        <h4>Немає замовлень</h4>
-                        <p>Ви ще не робили замовлень</p>
-                        <a href="{% url 'dish:menu' %}" class="btn btn-primary">Перейти до меню</a>
+                    <div class="text-center py-10 bg-gray-50 rounded-xl border border-dashed border-gray-300">
+                        <div class="text-4xl mb-3 opacity-50">🛒</div>
+                        <h4 class="text-lg font-bold text-gray-700 mb-1">Немає замовлень</h4>
+                        <p class="text-gray-500 mb-4">Ви ще не робили замовлень з меню.</p>
+                        <a href="{% url 'restaurant:menu' %}" class="inline-block bg-primary text-white font-bold py-2 px-6 rounded-lg hover:bg-[#6B3410] transition">Перейти до меню</a>
                     </div>
                 {% endif %}
             </div>
+
         </div>
     </div>
 </div>

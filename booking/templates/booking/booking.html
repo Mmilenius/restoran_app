@@ -2,177 +2,91 @@
 {% load static %}
 
 {% block content %}
-<div class="container" style="max-width: 800px; margin: 2rem auto;">
-    <div class="booking-header text-center mb-4">
-        <h1>Бронювання столика</h1>
-        <p class="text-muted">Забронюйте столик у нашому ресторані</p>
+<div class="max-w-4xl mx-auto px-4 py-8">
+    <div class="bg-gradient-to-r from-primary to-[#6B3410] text-white text-center p-8 rounded-2xl mb-8 shadow-lg">
+        <h1 class="text-3xl md:text-4xl font-bold mb-2">Бронювання столика</h1>
+        <p class="text-primary-100 text-lg">Забронюйте столик у нашому ресторані за лічені хвилини</p>
     </div>
 
-    <div class="card">
-        <div class="card-body">
-            <form method="POST" id="booking-form">
-                {% csrf_token %}
-                
-                <div class="row">
-                    <div class="col-md-6">
-                        <h4>Контактні дані</h4>
-                        <div class="mb-3">
-                            <label class="form-label">Повне ім'я *</label>
-                            {{ form.full_name }}
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Номер телефону *</label>
-                            {{ form.phone }}
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            {{ form.email }}
-                        </div>
+    <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 md:p-8">
+
+        <form method="POST" id="booking-form" class="
+            [&_input]:w-full [&_input]:border [&_input]:border-gray-300 [&_input]:rounded-lg [&_input]:px-4 [&_input]:py-2 [&_input]:focus:ring-2 [&_input]:focus:ring-primary [&_input]:focus:border-primary [&_input]:transition [&_input]:bg-gray-50 [&_input]:text-gray-800
+            [&_select]:w-full [&_select]:border [&_select]:border-gray-300 [&_select]:rounded-lg [&_select]:px-4 [&_select]:py-2 [&_select]:focus:ring-2 [&_select]:focus:ring-primary [&_select]:focus:border-primary [&_select]:transition [&_select]:bg-gray-50 [&_select]:text-gray-800
+            [&_textarea]:w-full [&_textarea]:border [&_textarea]:border-gray-300 [&_textarea]:rounded-lg [&_textarea]:px-4 [&_textarea]:py-2 [&_textarea]:focus:ring-2 [&_textarea]:focus:ring-primary [&_textarea]:focus:border-primary [&_textarea]:transition [&_textarea]:bg-gray-50 [&_textarea]:text-gray-800
+        ">
+            {% csrf_token %}
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+                <div>
+                    <h4 class="text-xl font-bold text-primary mb-4 border-b-2 border-gray-100 pb-2">Контактні дані</h4>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-semibold mb-2">Повне ім'я *</label>
+                        {{ form.full_name }}
                     </div>
-                    
-                    <div class="col-md-6">
-                        <h4>Деталі бронювання</h4>
-                        <div class="row">
-                            <div class="col-6 mb-3">
-                                <label class="form-label">Дата *</label>
-                                {{ form.date }}
-                            </div>
-                            <div class="col-6 mb-3">
-                                <label class="form-label">Час *</label>
-                                {{ form.time }}
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-6 mb-3">
-                                <label class="form-label">Гостей *</label>
-                                {{ form.guests }}
-                            </div>
-                            <div class="col-6 mb-3">
-                                <label class="form-label">Годин *</label>
-                                {{ form.duration }}
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Зона *</label>
-                            {{ form.zone }}
-                        </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-semibold mb-2">Номер телефону *</label>
+                        {{ form.phone }}
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-semibold mb-2">Email</label>
+                        {{ form.email }}
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Додаткові побажання</label>
-                    {{ form.notes }}
-                </div>
+                <div>
+                    <h4 class="text-xl font-bold text-primary mb-4 border-b-2 border-gray-100 pb-2">Деталі бронювання</h4>
 
-                <div class="alert alert-info">
-                    <strong>1.</strong> Ми підтвердимо ваше бронювання якомога швидше
-                </div>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Дата *</label>
+                            {{ form.date }}
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Час *</label>
+                            {{ form.time }}
+                        </div>
+                    </div>
 
-                <button type="submit" class="btn btn-primary btn-lg w-100">
-                    Забронювати
-                </button>
-            </form>
-        </div>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Гостей *</label>
+                            {{ form.guests }}
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Годин *</label>
+                            {{ form.duration }}
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-semibold mb-2">Зона *</label>
+                        {{ form.zone }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-gray-700 font-semibold mb-2">Додаткові побажання</label>
+                {{ form.notes }}
+            </div>
+
+            <div class="bg-blue-50 border-l-4 border-blue-500 text-blue-700 p-4 rounded-lg mb-8 flex items-center gap-3">
+                <i class="fas fa-info-circle text-xl"></i>
+                <p>Ми підтвердимо ваше бронювання якомога швидше після обробки заявки.</p>
+            </div>
+
+            <button type="submit" class="w-full bg-primary hover:bg-[#6B3410] text-white font-bold py-4 rounded-xl shadow-lg transition transform hover:-translate-y-1 text-lg">
+                <i class="fas fa-check-circle me-2"></i>Забронювати
+            </button>
+        </form>
     </div>
 </div>
 
-<style>
-.booking-header {
-    background: linear-gradient(135deg, #FF5722, #FF7043);
-    color: white;
-    padding: 2rem;
-    border-radius: 12px;
-    margin-bottom: 2rem;
-}
-
-.form-label {
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-}
-
-.form-control {
-    border: 2px solid #e9ecef;
-    border-radius: 8px;
-    padding: 0.75rem;
-}
-
-.form-control:focus {
-    border-color: #FF5722;
-    box-shadow: 0 0 0 0.2rem rgba(255, 87, 34, 0.25);
-}
-
-.alert {
-    border-radius: 8px;
-    border: none;
-}
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('booking-form');
-    const dateInput = document.querySelector('input[name="date"]');
-    const timeInput = document.querySelector('input[name="time"]');
-    const durationInput = document.querySelector('input[name="duration"]');
-    const zoneSelect = document.querySelector('select[name="zone"]');
-
-    // Встановлюємо мінімальну дату - сьогодні
-    const today = new Date().toISOString().split('T')[0];
-    dateInput.min = today;
-
-    // Перевірка доступності часу при зміні
-    function checkAvailability() {
-        const date = dateInput.value;
-        const time = timeInput.value;
-        const duration = durationInput.value;
-        const zone = zoneSelect.value;
-
-        if (date && time) {
-            fetch(`/booking/check-availability/?date=${date}&time=${time}&duration=${duration}&zone=${zone}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (!data.available) {
-                        alert('Увага: ' + data.message);
-                    }
-                });
-        }
-    }
-
-    dateInput.addEventListener('change', checkAvailability);
-    timeInput.addEventListener('change', checkAvailability);
-    durationInput.addEventListener('change', checkAvailability);
-    zoneSelect.addEventListener('change', checkAvailability);
-
-    // AJAX відправка форми
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const formData = new FormData(this);
-        
-        fetch('/booking/api/create/', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRFToken': '{{ csrf_token }}'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                window.location.href = data.redirect_url;
-            } else {
-                alert('Помилка: ' + data.message);
-                if (data.errors) {
-                    console.error('Validation errors:', data.errors);
-                }
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Сталася помилка при бронюванні');
-        });
-    });
-});
-</script>
+    {% block script %}
+    <script src="{% static 'deps/js/booking.js' %}"></script>
+    {% endblock %}
 {% endblock %}

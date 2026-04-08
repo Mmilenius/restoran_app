@@ -4,6 +4,7 @@ from allauth.account.forms import LoginForm, SignupForm
 from users.models import User
 
 class CustomAllauthLoginForm(LoginForm):
+
     login = forms.CharField(
         label="Email або Username",
         widget=forms.TextInput(attrs={

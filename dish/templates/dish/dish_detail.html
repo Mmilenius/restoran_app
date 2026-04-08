@@ -2,156 +2,117 @@
 {% load static %}
 
 {% block content %}
-<!-- Dish Detail Modal-like Container -->
-<div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center;">
-    <div style="background: white; border-radius: 12px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative;">
-        
-        <!-- Close Button -->
-        <button onclick="window.history.back()" style="position: absolute; top: 15px; right: 15px; background: #FF5722; color: white; border: none; border-radius: 50%; width: 35px; height: 35px; font-size: 18px; cursor: pointer; z-index: 10;">
-            ✕
+<div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 sm:p-6" id="dish-modal-overlay">
+
+    <div class="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative shadow-2xl flex flex-col" id="dish-modal-content">
+
+        <button onclick="window.history.back()" class="absolute top-4 right-4 bg-white/90 hover:bg-white text-gray-800 hover:text-red-500 w-10 h-10 rounded-full flex items-center justify-center shadow-lg backdrop-blur z-10 transition transform hover:scale-110">
+            <i class="fas fa-times text-xl"></i>
         </button>
 
-        <!-- Dish Image -->
-        <div style="position: relative;">
+        <div class="relative w-full h-64 md:h-80 bg-gray-100 flex-shrink-0">
             {% if dish.image %}
-            <img src="{{ dish.image.url }}" alt="{{ dish.name }}" style="width: 100%; height: 300px; object-fit: cover; border-radius: 12px 12px 0 0;">
+            <img src="{{ dish.image.url }}" alt="{{ dish.name }}" class="w-full h-full object-cover">
             {% else %}
-            <img src="{% static 'images/no-image.jpg' %}" alt="{{ dish.name }}" style="width: 100%; height: 300px; object-fit: cover; border-radius: 12px 12px 0 0;">
+            <img src="{% static 'deps/images/Not found image.png' %}" alt="{{ dish.name }}" class="w-full h-full object-cover">
             {% endif %}
-            
+
             {% if dish.is_new %}
-            <span style="position: absolute; top: 15px; left: 15px; background: #28a745; color: white; font-size: 12px; padding: 4px 8px; border-radius: 6px; font-weight: 600;">НОВИНКА</span>
+            <span class="absolute top-4 left-4 bg-green-500 text-white text-sm px-3 py-1 rounded-lg font-bold shadow-md">НОВИНКА</span>
             {% endif %}
-            
+
             {% if dish.discount_percentage %}
-            <span style="position: absolute; top: 15px; right: 50px; background: #FF5722; color: white; font-size: 12px; padding: 4px 8px; border-radius: 6px; font-weight: 600;">-{{ dish.discount_percentage }}%</span>
+            <span class="absolute top-4 right-16 bg-red-500 text-white text-sm px-3 py-1 rounded-lg font-bold shadow-md">-{{ dish.discount_percentage }}%</span>
             {% endif %}
         </div>
 
-        <!-- Dish Content -->
-        <div style="padding: 24px;">
-            <!-- Dish Header -->
-            <div style="margin-bottom: 20px;">
-                <h1 style="font-size: 28px; font-weight: 700; color: #2c3e50; margin-bottom: 8px;">{{ dish.name }}</h1>
-                <p style="color: #6c757d; font-size: 16px; line-height: 1.6; margin-bottom: 16px;">{{ dish.description }}</p>
-                
-                {% if dish.ingredients %}
-                <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 16px;">
-                    <p style="color: #495057; font-size: 14px; font-style: italic; margin: 0;">
-                        <strong>Інгредієнти:</strong> {{ dish.ingredients }}
-                    </p>
-                </div>
-                {% endif %}
+        <div class="p-6 md:p-8">
+            <div class="mb-6">
+                <h1 class="text-3xl font-bold text-gray-900 mb-3">{{ dish.name }}</h1>
+                <p class="text-gray-600 text-lg leading-relaxed">{{ dish.description }}</p>
             </div>
 
-            <!-- Dish Meta Information -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-bottom: 24px;">
-                <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; text-align: center;">
-                    <div style="font-size: 20px; margin-bottom: 4px;">🍽️</div>
-                    <div style="font-size: 14px; color: #6c757d;">Вага</div>
-                    <div style="font-weight: 600; color: #2c3e50;">{{ dish.weight }}г</div>
+            {% if dish.ingredients %}
+            <div class="bg-orange-50 border-l-4 border-primary p-4 rounded-r-lg mb-6">
+                <p class="text-gray-700 text-sm">
+                    <strong class="text-primary font-bold">Склад:</strong> <span class="italic">{{ dish.ingredients }}</span>
+                </p>
+            </div>
+            {% endif %}
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+                <div class="bg-gray-50 p-4 rounded-xl text-center border border-gray-100">
+                    <div class="text-2xl mb-1">🍽️</div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wide">Вага</div>
+                    <div class="font-bold text-gray-800">{{ dish.weight }}г</div>
                 </div>
 
-                {#{% if dish.calories %}
-                <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; text-align: center;">
-                    <div style="font-size: 20px; margin-bottom: 4px;">🔥</div>
-                    <div style="font-size: 14px; color: #6c757d;">Калорії</div>
-                    <div style="font-weight: 600; color: #2c3e50;">{{ dish.calories }} ккал</div>
+                {% if dish.calories %}
+                <div class="bg-gray-50 p-4 rounded-xl text-center border border-gray-100">
+                    <div class="text-2xl mb-1">🔥</div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wide">Калорії</div>
+                    <div class="font-bold text-gray-800">{{ dish.calories }} ккал</div>
                 </div>
                 {% endif %}
-                
+
                 {% if dish.cooking_time %}
-                <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; text-align: center;">
-                    <div style="font-size: 20px; margin-bottom: 4px;">⏱️</div>
-                    <div style="font-size: 14px; color: #6c757d;">Час готування</div>
-                    <div style="font-weight: 600; color: #2c3e50;">{{ dish.cooking_time }} хв</div>
+                <div class="bg-gray-50 p-4 rounded-xl text-center border border-gray-100">
+                    <div class="text-2xl mb-1">⏱️</div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wide">Час</div>
+                    <div class="font-bold text-gray-800">{{ dish.cooking_time }} хв</div>
                 </div>
-                {% endif %}#}
+                {% endif %}
 
-                <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; text-align: center;">
-                    <div style="font-size: 20px; margin-bottom: 4px;">📂</div>
-                    <div style="font-size: 14px; color: #6c757d;">Категорія</div>
-                    <div style="font-weight: 600; color: #2c3e50;">{{ dish.category.name }}</div>
+                <div class="bg-gray-50 p-4 rounded-xl text-center border border-gray-100">
+                    <div class="text-2xl mb-1">📂</div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wide">Категорія</div>
+                    <div class="font-bold text-primary">{{ dish.category.name }}</div>
                 </div>
             </div>
 
-            <!-- Likes and Share -->
-            <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 24px; padding: 16px; background: #f8f9fa; border-radius: 8px;">
-                <div style="display: flex; align-items: center; gap: 8px; cursor: pointer;" data-dish-id="{{ dish.id }}">
-                    <span style="font-size: 18px;">❤️</span>
-                    <span style="color: #6c757d; font-weight: 500;">{{ dish.likes }} вподобань</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                    <span style="font-size: 18px;">📤</span>
-                    <span style="color: #6c757d; font-weight: 500;">Поділитися</span>
-                </div>
+            <div class="flex items-center gap-6 mb-8 px-2">
+                <button class="flex items-center gap-2 text-gray-500 hover:text-red-500 transition group" data-dish-id="{{ dish.id }}">
+                    <i class="fas fa-heart text-xl group-hover:scale-110 transition"></i>
+                    <span class="font-medium">{{ dish.likes }} вподобань</span>
+                </button>
+                <button class="flex items-center gap-2 text-gray-500 hover:text-blue-500 transition group">
+                    <i class="fas fa-share text-xl group-hover:scale-110 transition"></i>
+                    <span class="font-medium">Поділитися</span>
+                </button>
             </div>
 
-            <!-- Price and Add to Cart -->
-            <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px; background: #f8f9fa; border-radius: 12px; margin-bottom: 24px;">
+            <div class="bg-gray-50 p-5 rounded-2xl border border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-6">
                 <div>
-                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                        <span style="font-size: 32px; font-weight: 700; color: #FF5722;">{{ dish.price }} ₴</span>
+                    <div class="flex items-baseline gap-3">
+                        <span class="text-4xl font-bold text-primary leading-none">{{ dish.price }} ₴</span>
                         {% if dish.old_price %}
-                        <span style="font-size: 20px; color: #6c757d; text-decoration: line-through;">{{ dish.old_price }} ₴</span>
+                        <span class="text-lg text-gray-400 line-through">{{ dish.old_price }} ₴</span>
                         {% endif %}
                     </div>
                     {% if dish.discount_percentage %}
-                    <div style="color: #28a745; font-weight: 600; font-size: 14px;">Економія {{ dish.old_price|floatformat:0|add:"-"|add:dish.price|floatformat:0 }} ₴</div>
+                    <div class="text-green-600 font-bold text-sm mt-1">
+                        <i class="fas fa-tag mr-1"></i>Економія {{ dish.old_price|floatformat:0|add:"-"|add:dish.price|floatformat:0 }} ₴
+                    </div>
                     {% endif %}
                 </div>
 
-                <!-- Quantity Controls -->
-                <div style="display: flex; align-items: center; gap: 16px;">
-                    <div style="display: flex; align-items: center; border: 2px solid #e9ecef; border-radius: 8px;">
-                        <button style="background: none; border: none; padding: 10px 12px; cursor: pointer; font-size: 18px; color: #FF5722;" onclick="decreaseQuantity()">−</button>
-                        <span id="quantity" style="padding: 10px 16px; font-weight: 600; min-width: 40px; text-align: center;">1</span>
-                        <button style="background: none; border: none; padding: 10px 12px; cursor: pointer; font-size: 18px; color: #FF5722;" onclick="increaseQuantity()">+</button>
+                <div class="flex items-center gap-4 w-full sm:w-auto">
+                    <div class="flex items-center bg-white border-2 border-gray-200 rounded-xl overflow-hidden h-12">
+                        <button id="btn-decrease" class="w-12 h-full flex items-center justify-center text-primary hover:bg-gray-50 transition text-xl font-bold">−</button>
+                        <span id="quantity" class="w-10 text-center font-bold text-gray-800 text-lg">1</span>
+                        <button id="btn-increase" class="w-12 h-full flex items-center justify-center text-primary hover:bg-gray-50 transition text-xl font-bold">+</button>
                     </div>
-                    
-                    <button class="add-btn" data-dish-id="{{ dish.id }}" style="padding: 12px 24px; font-size: 16px;">
-                        Додати <span id="total-price">{{ dish.price }}</span> ₴
+
+                    <button class="add-detail-btn flex-1 sm:flex-none bg-primary hover:bg-[#6B3410] text-white font-bold h-12 px-6 rounded-xl shadow-lg transition flex items-center justify-center gap-2"
+                            data-dish-id="{{ dish.id }}"
+                            data-price="{{ dish.price }}">
+                        <span>В корзину •</span>
+                        <span id="total-price">{{ dish.price }}</span> ₴
                     </button>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
-
-<script>
-let quantity = 1;
-const basePrice = {{ dish.price }};
-
-function increaseQuantity() {
-    quantity++;
-    updateQuantityDisplay();
-}
-
-function decreaseQuantity() {
-    if (quantity > 1) {
-        quantity--;
-        updateQuantityDisplay();
-    }
-}
-
-function updateQuantityDisplay() {
-    document.getElementById('quantity').textContent = quantity;
-    document.getElementById('total-price').textContent = (basePrice * quantity).toFixed(0);
-}
-
-// Close on Escape key
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        window.history.back();
-    }
-});
-
-// Close on background click
-document.addEventListener('click', function(e) {
-    if (e.target.style.position === 'fixed') {
-        window.history.back();
-    }
-});
-</script>
-
 {% endblock %}

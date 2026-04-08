@@ -1,130 +1,115 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-   <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static "deps/css/bootstrap/bootstrap.min.css" %}">
-    <link rel="stylesheet" href="{% static "deps/css/my_css.css" %}">
-    <title>Title</title>
-    <style>
-        {% block css %}
-        {% endblock %}
-        /* ==== CART MODAL ==== */
-        .cart-modal {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.6);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
+    <title>Гуцульський двір</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#8B4513',
+                        secondary: '#D2B48C',
+                        accent: '#FFD700',
+                        darkgreen: '#2F4F2F',
+                    }
+                }
+            }
         }
-        .cart-modal-content {
-            background: white;
-            width: 90%;
-            max-width: 800px;
-            border-radius: 12px;
-            padding: 20px;
-            position: relative;
-        }
-        .cart-modal-content .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 22px;
-            cursor: pointer;
-        }
-    </style>
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    {% block css %}{% endblock %}
 </head>
-<body>
-    <header class="header">
-        <div class="header-container_menu">
-            <div class="logo">
-                <div class="logo-icon">🏔️</div>
-                <div class="logo-text">
-                    <h1>Гуцульський двір</h1>
-                    <p>Ресторан</p>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased">
+
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+
+                <div class="flex-shrink-0 flex items-center gap-2">
+                    <span class="text-3xl">🏔️</span>
+                    <a href="{% url 'main:index' %}" class="flex flex-col justify-center">
+                        <span class="text-xl font-bold text-primary leading-none">Гуцульський двір</span>
+                        <span class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Ресторан</span>
+                    </a>
+                </div>
+
+                <nav class="hidden md:flex space-x-8">
+                    <a href="{% url 'main:index' %}" class="text-gray-700 hover:text-primary font-semibold transition">Головна</a>
+                    <a href="{% url 'restaurant:menu' %}" class="text-gray-700 hover:text-primary font-semibold transition">Меню</a>
+                    <a href="{% url 'booking:booking' %}" class="text-gray-700 hover:text-primary font-semibold transition">Бронювання</a>
+                    <a href="{% url 'comments:leave_comment' %}" class="text-gray-700 hover:text-primary font-semibold transition">Залишити відгук</a>
+                </nav>
+
+                <div class="flex items-center gap-3 sm:gap-4">
+                    <button onclick="toggleCartModal()" class="flex items-center gap-1 sm:gap-2 bg-primary text-white px-3 py-2 sm:px-4 sm:py-2 rounded-lg hover:bg-[#6B3410] transition shadow-sm">
+                        <span class="text-lg">🛒</span>
+                        <span class="hidden sm:inline font-medium text-sm">Кошик</span>
+                        <span id="cart-count" class="bg-accent text-primary text-[10px] font-black px-1.5 py-0.5 rounded-full ml-1">
+                            {{ cart_total_quantity|default:"0" }}
+                        </span>
+                    </button>
+
+                    {% if user.is_authenticated %}
+                        <div class="relative group">
+                            <button class="flex items-center gap-1 text-primary focus:outline-none transition transform hover:scale-110 h-full py-2">
+                                <span class="text-2xl" title="Мій профіль: {{ user.username }}">👤</span>
+                                <i class="fas fa-chevron-down text-[10px] transition group-hover:rotate-180"></i>
+                            </button>
+
+                            <div class="absolute right-0 top-full pt-1 w-48 hidden group-hover:block z-50">
+                                <div class="bg-white rounded-xl shadow-xl border border-gray-100 py-2">
+                                    <a href="{% url 'users:profile' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition">
+                                        <i class="fas fa-id-card mr-2 opacity-50"></i> Мій профіль
+                                    </a>
+                                    <hr class="my-1 border-gray-50">
+                                    <a href="{% url 'users:logout' %}" class="block px-4 py-2 text-sm text-red-500 hover:bg-red-50 transition">
+                                        <i class="fas fa-sign-out-alt mr-2 opacity-50"></i> Вийти
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <a href="{% url 'account_login' %}" class="text-2xl text-primary hover:scale-110 transition transform h-full flex items-center" title="Увійти">👤</a>
+                    {% endif %}
+
+
+                    <button id="mobile-menu-btn" class="md:hidden text-2xl text-primary focus:outline-none ml-2">☰</button>
                 </div>
             </div>
-            <div class="header-actions">
-                <button class="cart-btn" onclick="toggleCartModal()">
-                    🛒 Корзина <span id="cart-count">{{ cart_count }}</span>
-                </button>
-                {% if user.is_authenticated %}
-                    <div class="user-btn" title="{{ users.username }}">👤</div>
-                {% else %}
-                    <a href="{% url 'account_login' %}" class="user-btn" title="Увійти">👤</a>
-                {% endif %}
-                <button class="menu-btn">☰</button>
-            </div>
         </div>
+
     </header>
 
-    <!-- Navigation -->
-    <nav class="nav">
-        <div class="nav-container_menu">
-            <ul class="nav-menu">
-                <li class="nav-item"><a href="{% url 'main:index' %}" class="nav-link ">Головна</a></li>
-                <li class="nav-item"><a href="{% url 'dish:categories' %}" class="nav-link ">Меню</a></li>
-                <li class="nav-item"><a href="{% url 'booking:booking' %}" class="nav-link ">Бронювання</a></li>
-                <li class="nav-item"><a href="{% url 'comments:leave_comment' %}" class="nav-link ">Залишити відгук</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <div class="container">
-        <div class="row mt-1">
-            <div class="col-lg-10">
-                <!-- Контент на сторінці -->
-                {% block content %}
-                {% endblock %}
-            </div>
-        </div>
-    </div>
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {% block content %}
+        {% endblock %}
+    </main>
 
     {% block footer %}
     {% endblock %}
 
-    <!-- ==== CART MODAL ==== -->
-    <div id="cartModal" class="cart-modal">
-        <div class="cart-modal-content">
-            <span class="close-btn" onclick="toggleCartModal()">&times;</span>
-            <div id="cart-container">
+    <div id="cartModal" class="fixed inset-0 bg-black/60 hidden justify-center items-center z-50 backdrop-blur-sm">
+        <div class="bg-white w-[90%] max-w-3xl rounded-xl p-6 relative shadow-2xl transform transition-all">
+            <button onclick="toggleCartModal()" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-3xl leading-none">&times;</button>
+            <h2 class="text-2xl font-bold text-primary mb-4 border-b pb-2">Ваше замовлення</h2>
+            <div id="cart-container" class="max-h-[70vh] overflow-y-auto">
                 {% include "carts/cart.html" %}
             </div>
         </div>
     </div>
 
-    <script src="{% static "deps/js/jquery/jquery-3.7.0.min.js" %}"></script>
-    <script src="{% static "deps/js/jquery-ajax.js" %}"></script>
-    <script src="{% static "deps/js/bootstrap/bootstrap.bundle.min.js" %}"></script>
-    {% block script %}
-    {% endblock %}
 
-    <script>
-        function toggleCartModal() {
-            const modal = document.getElementById("cartModal");
-            if (modal.style.display === "flex") {
-                modal.style.display = "none";
-            } else {
-                modal.style.display = "flex";
-                // AJAX підвантаження корзини
-                fetch("/cart/")
-                    .then(res => res.text())
-                    .then(html => {
-                        document.getElementById("cart-container").innerHTML = html;
-                    });
-            }
-        }
-        function updateCartCounter(totalItems) {
-            const cartCounter = document.getElementById('cart-count');
-            if (cartCounter) {
-                cartCounter.textContent = totalItems;
-            }
-        }
-    </script>
+    {% block script %}
+        <script src="{% static 'deps/js/jquery/jquery-3.7.0.min.js' %}"></script>
+        <script src="{% static 'deps/js/main.js' %}"></script>
+    {% endblock %}
 </body>
 </html>

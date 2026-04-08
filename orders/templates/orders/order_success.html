@@ -2,29 +2,44 @@
 {% load static %}
 
 {% block content %}
-<div class="container" style="max-width: 600px; margin: 3rem auto; text-align: center;">
-    <div class="success-icon" style="font-size: 4rem; color: #28a745; margin-bottom: 1rem;">
-        ✅
-    </div>
-    
-    <h1>Замовлення успішно створено!</h1>
-    
-    <div class="order-details" style="background: #f8f9fa; padding: 2rem; border-radius: 12px; margin: 2rem 0;">
-        <h3>Деталі замовлення</h3>
-        <p><strong>Номер замовлення:</strong> #{{ order.id }}</p>
-        <p><strong>Номер столика:</strong> {{ order.table_number }}</p>
-        <p><strong>Загальна сума:</strong> {{ order.total_price }} ₴</p>
-        <p><strong>Статус:</strong> {{ order.get_status_display }}</p>
+<div class="max-w-2xl mx-auto px-4 py-16 text-center">
+
+    <div class="inline-flex items-center justify-center w-24 h-24 bg-green-100 rounded-full mb-6 shadow-sm">
+        <i class="fas fa-check text-5xl text-green-500"></i>
     </div>
 
-    <p>Ваше замовлення прийнято в обробку. Очікуйте на столику {{ order.table_number }}</p>
-    
-    <div class="actions" style="margin-top: 2rem;">
-        <a href="{% url 'dish:menu' %}" class="btn btn-primary">
-            Повернутися до меню
+    <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Замовлення успішно створено!</h1>
+    <p class="text-gray-600 mb-8 text-lg">Ваше замовлення прийнято в обробку. Очікуйте на столику <strong class="text-primary text-xl">{{ order.table_number }}</strong></p>
+
+    <div class="bg-gray-50 p-6 md:p-8 rounded-2xl shadow-inner border border-gray-200 text-left mb-8 max-w-md mx-auto">
+        <h3 class="text-xl font-bold text-primary mb-4 border-b-2 border-gray-200 pb-2">Деталі чеку</h3>
+
+        <ul class="space-y-4 text-gray-700">
+            <li class="flex justify-between items-center">
+                <span class="text-gray-500">Номер замовлення:</span>
+                <span class="font-bold text-gray-900 bg-white px-3 py-1 rounded-lg border border-gray-100 shadow-sm">#{{ order.id }}</span>
+            </li>
+            <li class="flex justify-between items-center">
+                <span class="text-gray-500">Номер столика:</span>
+                <span class="font-bold text-gray-900 text-lg">{{ order.table_number }}</span>
+            </li>
+            <li class="flex justify-between items-center">
+                <span class="text-gray-500">Загальна сума:</span>
+                <span class="font-bold text-primary text-2xl">{{ order.total_price }} ₴</span>
+            </li>
+            <li class="flex justify-between items-center pt-3 border-t border-gray-200">
+                <span class="text-gray-500">Статус:</span>
+                <span class="font-bold text-orange-600 bg-orange-100 px-3 py-1 rounded-lg">{{ order.get_status_display }}</span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="flex flex-col sm:flex-row justify-center gap-4">
+        <a href="{% url 'restaurant:menu' %}" class="bg-primary hover:bg-[#6B3410] text-white font-bold py-3 px-8 rounded-xl transition shadow-md flex items-center justify-center gap-2">
+            <i class="fas fa-utensils"></i> Повернутися до меню
         </a>
-        <a href="{% url 'orders:order_list' %}" class="btn btn-outline-secondary">
-            Мої замовлення
+        <a href="{% url 'orders:order_list' %}" class="bg-white border-2 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 font-bold py-3 px-8 rounded-xl transition flex items-center justify-center gap-2">
+            <i class="fas fa-list-alt"></i> Мої замовлення
         </a>
     </div>
 </div>
