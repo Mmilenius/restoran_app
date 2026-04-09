@@ -2,91 +2,96 @@
 {% load static %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto px-4 py-8">
+<div class="max-w-5xl mx-auto px-4 py-8">
     <div class="bg-gradient-to-r from-primary to-[#6B3410] text-white text-center p-8 rounded-2xl mb-8 shadow-lg">
         <h1 class="text-3xl md:text-4xl font-bold mb-2">Бронювання столика</h1>
-        <p class="text-primary-100 text-lg">Забронюйте столик у нашому ресторані за лічені хвилини</p>
+        <p class="text-primary-100 text-lg">Оберіть вільний столик та вкажіть деталі</p>
+    </div>
+
+    <div class="bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-gray-100 mb-8">
+        <h3 class="text-xl font-bold text-center text-gray-800 mb-6 border-b-2 border-gray-100 pb-4">Карта ресторану</h3>
+
+        <div class="flex flex-wrap justify-center gap-4 sm:gap-6 mb-8 text-sm font-medium text-gray-600">
+            <div class="flex items-center gap-2"><div class="w-5 h-5 border-2 border-blue-400 rounded"></div> Вільно</div>
+            <div class="flex items-center gap-2"><div class="w-5 h-5 border-2 border-red-500 rounded"></div> VIP</div>
+            <div class="flex items-center gap-2"><div class="w-5 h-5 bg-gray-200 text-white flex justify-center items-center rounded text-xs">✖</div> Зайнято</div>
+            <div class="flex items-center gap-2"><div class="w-5 h-5 bg-gray-900 rounded"></div> Ваш вибір</div>
+        </div>
+
+        <div id="restaurant-map" class="space-y-10">
+            {% for zone_key, zone_data in tables_by_zone.items %}
+                {% if zone_data.tables %}
+                <div class="zone-section">
+                    <div class="flex items-center mb-4">
+                        <div class="flex-grow h-px bg-gray-200"></div>
+                        <h4 class="px-4 font-bold text-gray-700 uppercase tracking-wider text-sm">{{ zone_data.name }}</h4>
+                        <div class="flex-grow h-px bg-gray-200"></div>
+                    </div>
+
+                    <div class="flex flex-wrap justify-center gap-3 sm:gap-4 max-w-3xl mx-auto">
+                        {% for table in zone_data.tables %}
+                        <button type="button"
+                                class="table-btn w-14 h-14 sm:w-16 sm:h-16 border-2 rounded-xl flex flex-col justify-center items-center transition cursor-pointer
+                                       {% if table.is_vip %}border-red-500 hover:bg-red-50{% else %}border-blue-400 hover:bg-blue-50{% endif %}"
+                                data-table-id="{{ table.id }}"
+                                data-vip="{{ table.is_vip|yesno:'true,false' }}">
+
+                            <span class="table-info font-bold text-gray-800 text-base sm:text-lg">{{ table.number }}</span>
+                            <span class="table-info text-[10px] sm:text-xs text-gray-500">{{ table.seats }} місць</span>
+                            <span class="table-occupied-x hidden text-white font-bold text-2xl">✖</span>
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+
+            {% if not tables_by_zone.main_hall.tables and not tables_by_zone.terrace.tables and not tables_by_zone.vip.tables %}
+                <p class="text-center text-gray-500 italic">Столики ще не додані в базу даних.</p>
+            {% endif %}
+        </div>
     </div>
 
     <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 md:p-8">
-
         <form method="POST" id="booking-form" class="
             [&_input]:w-full [&_input]:border [&_input]:border-gray-300 [&_input]:rounded-lg [&_input]:px-4 [&_input]:py-2 [&_input]:focus:ring-2 [&_input]:focus:ring-primary [&_input]:focus:border-primary [&_input]:transition [&_input]:bg-gray-50 [&_input]:text-gray-800
             [&_select]:w-full [&_select]:border [&_select]:border-gray-300 [&_select]:rounded-lg [&_select]:px-4 [&_select]:py-2 [&_select]:focus:ring-2 [&_select]:focus:ring-primary [&_select]:focus:border-primary [&_select]:transition [&_select]:bg-gray-50 [&_select]:text-gray-800
             [&_textarea]:w-full [&_textarea]:border [&_textarea]:border-gray-300 [&_textarea]:rounded-lg [&_textarea]:px-4 [&_textarea]:py-2 [&_textarea]:focus:ring-2 [&_textarea]:focus:ring-primary [&_textarea]:focus:border-primary [&_textarea]:transition [&_textarea]:bg-gray-50 [&_textarea]:text-gray-800
         ">
             {% csrf_token %}
+            <input type="hidden" name="table_id" id="selected-table-id" required>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
                 <div>
-                    <h4 class="text-xl font-bold text-primary mb-4 border-b-2 border-gray-100 pb-2">Контактні дані</h4>
-
-                    <div class="mb-4">
-                        <label class="block text-gray-700 font-semibold mb-2">Повне ім'я *</label>
-                        {{ form.full_name }}
+                    <h4 class="text-xl font-bold text-primary mb-4 border-b-2 border-gray-100 pb-2">Деталі часу</h4>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div><label class="block text-gray-700 font-semibold mb-2">Дата *</label>{{ form.date }}</div>
+                        <div><label class="block text-gray-700 font-semibold mb-2">Час *</label>{{ form.time }}</div>
                     </div>
-
-                    <div class="mb-4">
-                        <label class="block text-gray-700 font-semibold mb-2">Номер телефону *</label>
-                        {{ form.phone }}
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="block text-gray-700 font-semibold mb-2">Email</label>
-                        {{ form.email }}
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div><label class="block text-gray-700 font-semibold mb-2">Гостей *</label>{{ form.guests }}</div>
+                        <div><label class="block text-gray-700 font-semibold mb-2">Годин *</label>{{ form.duration }}</div>
                     </div>
                 </div>
 
                 <div>
-                    <h4 class="text-xl font-bold text-primary mb-4 border-b-2 border-gray-100 pb-2">Деталі бронювання</h4>
-
-                    <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Дата *</label>
-                            {{ form.date }}
-                        </div>
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Час *</label>
-                            {{ form.time }}
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Гостей *</label>
-                            {{ form.guests }}
-                        </div>
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Годин *</label>
-                            {{ form.duration }}
-                        </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="block text-gray-700 font-semibold mb-2">Зона *</label>
-                        {{ form.zone }}
-                    </div>
+                    <h4 class="text-xl font-bold text-primary mb-4 border-b-2 border-gray-100 pb-2">Контакти</h4>
+                    <div class="mb-4"><label class="block text-gray-700 font-semibold mb-2">Повне ім'я *</label>{{ form.full_name }}</div>
+                    <div class="mb-4"><label class="block text-gray-700 font-semibold mb-2">Телефон *</label>{{ form.phone }}</div>
+                    <div class="mb-4"><label class="block text-gray-700 font-semibold mb-2">Email</label>{{ form.email }}</div>
                 </div>
             </div>
 
-            <div class="mb-6">
-                <label class="block text-gray-700 font-semibold mb-2">Додаткові побажання</label>
-                {{ form.notes }}
-            </div>
+            <div class="mb-6"><label class="block text-gray-700 font-semibold mb-2">Додаткові побажання</label>{{ form.notes }}</div>
 
-            <div class="bg-blue-50 border-l-4 border-blue-500 text-blue-700 p-4 rounded-lg mb-8 flex items-center gap-3">
-                <i class="fas fa-info-circle text-xl"></i>
-                <p>Ми підтвердимо ваше бронювання якомога швидше після обробки заявки.</p>
-            </div>
-
-            <button type="submit" class="w-full bg-primary hover:bg-[#6B3410] text-white font-bold py-4 rounded-xl shadow-lg transition transform hover:-translate-y-1 text-lg">
+            <button type="submit" class="w-full bg-primary hover:bg-[#6B3410] text-white font-bold py-4 rounded-xl shadow-lg transition text-lg">
                 <i class="fas fa-check-circle me-2"></i>Забронювати
             </button>
         </form>
     </div>
 </div>
 
-    {% block script %}
-    <script src="{% static 'deps/js/booking.js' %}"></script>
-    {% endblock %}
+{% block script %}
+<script src="{% static 'deps/js/booking.js' %}"></script>
+{% endblock %}
 {% endblock %}

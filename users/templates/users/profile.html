@@ -24,14 +24,19 @@
                 <h3 class="text-xl font-bold text-gray-900">{{ user.get_full_name|default:user.username }}</h3>
                 <p class="text-gray-500 text-sm mb-6">@{{ user.username }}</p>
 
+                <div class="bg-gradient-to-r from-orange-50 to-orange-100 p-4 rounded-xl border border-orange-200 text-center mb-4 shadow-sm transform transition hover:scale-105">
+                    <div class="text-[11px] text-orange-600 uppercase font-black mb-1 tracking-wider">🎁 Ваш бонусний баланс</div>
+                    <div class="text-3xl font-black text-primary">{{ user.bonus_points|floatformat:0|default:"0" }} ₴</div>
+                </div>
+
                 <div class="grid grid-cols-2 gap-4">
                     <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                        <div class="text-2xl font-bold text-primary">{{ bookings_count|default:"0" }}</div>
-                        <div class="text-xs text-gray-500 uppercase font-medium">Бронювань</div>
+                        <div class="text-2xl font-bold text-gray-800">{{ bookings_count|default:"0" }}</div>
+                        <div class="text-xs text-gray-500 uppercase font-bold mt-1">Бронювань</div>
                     </div>
                     <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                        <div class="text-2xl font-bold text-primary">{{ orders_count|default:"0" }}</div>
-                        <div class="text-xs text-gray-500 uppercase font-medium">Замовлень</div>
+                        <div class="text-2xl font-bold text-gray-800">{{ orders_count|default:"0" }}</div>
+                        <div class="text-xs text-gray-500 uppercase font-bold mt-1">Замовлень</div>
                     </div>
                 </div>
             </div>

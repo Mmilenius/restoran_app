@@ -5,12 +5,14 @@ from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.db import transaction
-from django.contrib.auth.mixins import LoginRequiredMixin # Додано
+from django.contrib.auth.mixins import LoginRequiredMixin  # Додано
 import json
+from decimal import Decimal
 
 from carts.views import CartService
 from .models import Order, OrderItem
 from .forms import OrderForm
+
 
 # Додаємо LoginRequiredMixin — тепер тільки залогінені бачать цю сторінку
 class CreateOrderView(LoginRequiredMixin, View):
@@ -59,35 +61,52 @@ class OrderListView(LoginRequiredMixin, View):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class CreateOrderAPIView(View):
-    # Тут не ставимо міксин, а перевіряємо всередині, щоб повернути гарний JSON
     def post(self, request):
         if not request.user.is_authenticated:
-            return JsonResponse({
-                'success': False,
-                'message': 'Ви повинні увійти в систему'
-            }, status=401)
+            return JsonResponse({'success': False, 'message': 'Ви повинні увійти в систему'}, status=401)
 
         try:
             data = json.loads(request.body)
             table_number = int(data.get('table_number'))
             notes = data.get('notes', '')
+            use_bonuses = data.get('use_bonuses', False)  # Читаємо, чи хоче клієнт списати бонуси
 
             cart_service = CartService(request)
             cart_summary = cart_service.get_cart_summary()
 
             if cart_summary['total_items'] == 0:
-                return JsonResponse({
-                    'success': False,
-                    'message': 'Корзина порожня'
-                })
+                return JsonResponse({'success': False, 'message': 'Корзина порожня'})
+
+            user = request.user
+            original_total = Decimal(str(cart_summary['total_price']))
+            bonuses_spent = Decimal('0.00')
+            discount = Decimal('0.00')
+
+            # Максимальна дозволена знижка (50% від суми замовлення)
+            max_possible_discount = original_total * Decimal('0.50')
+
+            # Логіка списання бонусів (не більше 50% чека)
+            if use_bonuses and user.bonus_points > 0:
+                # Беремо те, що менше: або всі бонуси користувача, або 50% від чека
+                bonuses_spent = min(user.bonus_points, max_possible_discount)
+                discount = bonuses_spent
+
+            final_total = original_total - discount
+
+            # Кешбек 5% від РЕАЛЬНО сплаченої суми
+            CASHBACK_RATE = Decimal('0.05')
+            bonuses_earned = round(final_total * CASHBACK_RATE, 2)
 
             with transaction.atomic():
-                # Створюємо замовлення ТУТ ДОДАНО user=request.user
+                # Створюємо замовлення
                 order = Order.objects.create(
                     cart=cart_summary['cart'],
-                    user=request.user, # ОБОВ'ЯЗКОВО ДЛЯ ПРОФІЛЮ
+                    user=user,
                     table_number=table_number,
-                    total_price=cart_summary['total_price'],
+                    total_price=final_total,  # Фінальна сума до оплати
+                    discount_amount=discount,
+                    bonuses_spent=bonuses_spent,
+                    bonuses_earned=bonuses_earned,
                     notes=notes
                 )
 
@@ -101,18 +120,20 @@ class CreateOrderAPIView(View):
                         total_price=cart_item.get_total_price()
                     )
 
+                # Оновлюємо баланс користувача
+                if bonuses_spent > 0:
+                    user.bonus_points -= bonuses_spent
+                user.bonus_points += bonuses_earned
+                user.save()
+
                 # Очищаємо корзину
                 cart_service.clear_cart()
 
             return JsonResponse({
                 'success': True,
-                'message': f'Замовлення #{order.id} створено успішно',
-                'order_id': order.id,
+                'message': f'Замовлення створено',
                 'redirect_url': f'/orders/success/{order.id}/'
             })
 
         except Exception as e:
-            return JsonResponse({
-                'success': False,
-                'message': f'Помилка: {str(e)}'
-            })
+            return JsonResponse({'success': False, 'message': f'Помилка: {str(e)}'})

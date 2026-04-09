@@ -6,7 +6,9 @@ from .models import Booking
 class BookingForm(forms.ModelForm):
     class Meta:
         model = Booking
-        fields = ['full_name', 'phone', 'email', 'date', 'time', 'duration', 'guests', 'zone', 'notes']
+        # ВИДАЛЕНО: поле 'zone'
+        fields = ['full_name', 'phone', 'email', 'date', 'time', 'duration', 'guests', 'notes']
+
         widgets = {
             'date': forms.DateInput(attrs={
                 'type': 'date',
@@ -27,7 +29,6 @@ class BookingForm(forms.ModelForm):
                 'max': 20,
                 'class': 'form-control'
             }),
-            'zone': forms.Select(attrs={'class': 'form-control'}),
             'full_name': forms.TextInput(attrs={'class': 'form-control'}),
             'phone': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
@@ -45,7 +46,6 @@ class BookingForm(forms.ModelForm):
             'time': 'Час',
             'duration': 'Тривалість (години)',
             'guests': 'Кількість гостей',
-            'zone': 'Оберіть бажану зону',
             'notes': 'Додаткові побажання'
         }
 
@@ -54,23 +54,3 @@ class BookingForm(forms.ModelForm):
         if date < timezone.now().date():
             raise forms.ValidationError('Не можна бронювати на минулі дати')
         return date
-
-    def clean(self):
-        cleaned_data = super().clean()
-        date = cleaned_data.get('date')
-        time = cleaned_data.get('time')
-        duration = cleaned_data.get('duration')
-        zone = cleaned_data.get('zone')
-
-        if date and time and duration and zone:
-            # Створюємо тимчасовий об'єкт для перевірки
-            temp_booking = Booking(
-                date=date,
-                time=time,
-                duration=duration,
-                zone=zone
-            )
-
-            # Викликаємо метод перевірки доступності
-            if not temp_booking.is_available():
-                raise forms.ValidationError('Обраний час уже зайнятий. Будь ласка, оберіть інший час або зону.')

@@ -4,6 +4,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from users.models import User
 from carts.models import Cart, CartItem
 
+
 class Order(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Очікує підтвердження'),
@@ -34,6 +35,13 @@ class Order(models.Model):
         decimal_places=2,
         verbose_name=_('Загальна сума')
     )
+
+    discount_amount = models.DecimalField(max_digits=8, decimal_places=2, default=0.00,
+                                          verbose_name=_('Знижка (бонусами)'))
+    bonuses_spent = models.DecimalField(max_digits=8, decimal_places=2, default=0.00, verbose_name=_('Списано бонусів'))
+    bonuses_earned = models.DecimalField(max_digits=8, decimal_places=2, default=0.00,
+                                         verbose_name=_('Нараховано бонусів'))
+
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
@@ -60,9 +68,6 @@ class Order(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return f"Замовлення #{self.id} - Столик {self.table_number}"
-
-    def __str__(self):
         return f"Замовлення #{self.id} - Столик {self.table_number} - {self.get_status_display()}"
 
     def get_absolute_url(self):
@@ -74,6 +79,7 @@ class Order(models.Model):
 
     def get_first_items(self, limit=2):
         return self.items.all()[:limit]
+
 
 class OrderItem(models.Model):
     order = models.ForeignKey(
@@ -100,13 +106,11 @@ class OrderItem(models.Model):
         verbose_name=_('Загальна сума')
     )
 
+    # Звідси бонусні поля ми забрали!
 
     class Meta:
         verbose_name = _('Позиція замовлення')
         verbose_name_plural = _('Позиції замовлення')
-
-    def __str__(self):
-        return f"{self.dish_name} x {self.quantity}"
 
     def __str__(self):
         return f"{self.dish_name} x {self.quantity} - {self.total_price} ₴"

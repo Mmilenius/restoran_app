@@ -1,6 +1,49 @@
+// ==========================================
+// 1. ГЛОБАЛЬНІ ФУНКЦІЇ (Доступні всюди)
+// ==========================================
+
+// Отримання CSRF токена
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// ВІДКРИТТЯ/ЗАКРИТТЯ МОДАЛКИ КОРЗИНИ
+window.toggleCartModal = function() {
+    const modal = document.getElementById("cartModal");
+    if (modal) {
+        if (modal.classList.contains("hidden")) {
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+            fetch("/cart/")
+                .then(res => res.text())
+                .then(html => {
+                    const container = document.getElementById("cart-container");
+                    if (container) container.innerHTML = html;
+                });
+        } else {
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+        }
+    }
+};
+
+// ==========================================
+// 2. ЛОГІКА, ЯКА ЧЕКАЄ ЗАВАНТАЖЕННЯ СТОРІНКИ
+// ==========================================
 document.addEventListener('DOMContentLoaded', function() {
 
-    // 1. МОБІЛЬНЕ МЕНЮ
+    // --- МОБІЛЬНЕ МЕНЮ ---
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
     const mobileMenu = document.getElementById('mobile-menu');
     if (mobileMenuBtn && mobileMenu) {
@@ -9,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 2. ПЛАВНИЙ СКРОЛ КАТЕГОРІЙ У МЕНЮ (При кліку)
+    // --- ПЛАВНИЙ СКРОЛ КАТЕГОРІЙ ---
     const categoryLinks = document.querySelectorAll('.category-scroll-link');
     categoryLinks.forEach(link => {
         link.addEventListener('click', function(e) {
@@ -24,21 +67,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // 2.5 АВТОМАТИЧНА ПІДСВІТКА ПРИ СКРОЛІ (ScrollSpy)
+    // --- АВТОМАТИЧНА ПІДСВІТКА ПРИ СКРОЛІ ---
     const sections = document.querySelectorAll('div[id^="category-"]');
     const allDishesLink = document.getElementById('all-dishes-link');
 
     if (sections.length > 0) {
         window.addEventListener('scroll', function() {
             let current = '';
-            // Беремо позицію скролу + відступ на висоту хедера (150px)
             const scrollY = window.scrollY + 150;
 
-            // Визначаємо, яка секція зараз на екрані
             sections.forEach(section => {
                 const sectionTop = section.offsetTop;
                 const sectionHeight = section.offsetHeight;
-
                 if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
                     current = section.getAttribute('id').replace('category-', '');
                 }
@@ -46,7 +86,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
             let isAnyCategoryActive = false;
 
-            // Змінюємо кольори кнопок у лівому меню
             categoryLinks.forEach(link => {
                 link.classList.remove('bg-primary', 'text-white', 'shadow-md');
                 link.classList.add('text-gray-700');
@@ -58,14 +97,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
-            // Керуємо кнопкою "Всі страви"
             if (allDishesLink) {
                 if (isAnyCategoryActive) {
-                    // Якщо активна якась категорія, знімаємо підсвітку з "Всі страви"
                     allDishesLink.classList.remove('bg-primary', 'text-white', 'shadow-md');
                     allDishesLink.classList.add('text-gray-700');
                 } else if (window.scrollY < 200) {
-                    // Якщо ми на самому верху сторінки, підсвічуємо "Всі страви"
                     allDishesLink.classList.remove('text-gray-700');
                     allDishesLink.classList.add('bg-primary', 'text-white', 'shadow-md');
                 }
@@ -73,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 3. ДОДАВАННЯ СТРАВИ В КОРЗИНУ
+    // --- ДОДАВАННЯ СТРАВИ В КОРЗИНУ ---
     const addButtons = document.querySelectorAll(".add-btn");
     addButtons.forEach(btn => {
         btn.addEventListener("click", function (e) {
@@ -117,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // 4. ЛОГІКА СТОРІНКИ ДЕТАЛЕЙ СТРАВИ (МОДАЛКА)
+    // --- ЛОГІКА СТОРІНКИ ДЕТАЛЕЙ СТРАВИ (МОДАЛКА) ---
     const detailOverlay = document.getElementById('dish-modal-overlay');
     if (detailOverlay) {
         let currentQuantity = 1;
@@ -191,43 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== "") {
-            const cookies = document.cookie.split(";");
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + "=")) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-});
-
-// 5. ВІДКРИТТЯ/ЗАКРИТТЯ МОДАЛКИ КОРЗИНИ
-window.toggleCartModal = function() {
-    const modal = document.getElementById("cartModal");
-    if (modal) {
-        if (modal.classList.contains("hidden")) {
-            modal.classList.remove("hidden");
-            modal.classList.add("flex");
-            fetch("/cart/")
-                .then(res => res.text())
-                .then(html => {
-                    const container = document.getElementById("cart-container");
-                    if (container) container.innerHTML = html;
-                });
-        } else {
-            modal.classList.add("hidden");
-            modal.classList.remove("flex");
-        }
-    }
-};
-
-// 6. ЛОГІКА ОФОРМЛЕННЯ ЗАМОВЛЕННЯ (AJAX)
+    // --- ОФОРМЛЕННЯ ЗАМОВЛЕННЯ ---
     const orderForm = document.getElementById('order-form');
     if (orderForm) {
         orderForm.addEventListener('submit', function(e) {
@@ -236,9 +236,10 @@ window.toggleCartModal = function() {
             const formData = new FormData(this);
             const tableNumber = formData.get('table_number');
             const notes = formData.get('notes');
-
-            // Отримуємо токен (використовуємо функцію getCookie, яка вже є в твоєму main.js)
             const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie("csrftoken");
+            
+            const useBonusesCheckbox = document.getElementById('use-bonuses-checkbox');
+            const useBonuses = useBonusesCheckbox ? useBonusesCheckbox.checked : false;
 
             fetch('/orders/api/create/', {
                 method: 'POST',
@@ -248,7 +249,8 @@ window.toggleCartModal = function() {
                 },
                 body: JSON.stringify({
                     table_number: parseInt(tableNumber),
-                    notes: notes
+                    notes: notes,
+                    use_bonuses: useBonuses 
                 })
             })
             .then(response => response.json())
@@ -266,13 +268,40 @@ window.toggleCartModal = function() {
         });
     }
 
-// 7. ЛОГІКА КОРЗИНИ (Зміна кількості та видалення всередині модалки)
-    document.addEventListener('click', function(e) {
+    // --- ДИНАМІЧНИЙ ПІДРАХУНОК БОНУСІВ В ІНТЕРФЕЙСІ ---
+    const bonusCheckbox = document.getElementById('use-bonuses-checkbox');
+    const finalTotalDisplay = document.getElementById('final-total-display');
+    const discountDisplay = document.getElementById('discount-display');
+    const discountAmountSpan = document.getElementById('discount-amount');
 
-        // Допоміжна функція для отримання токена
+    if (bonusCheckbox && finalTotalDisplay) {
+        bonusCheckbox.addEventListener('change', function() {
+            const userBonuses = parseFloat(this.getAttribute('data-user-bonuses').replace(',', '.'));
+            const originalTotal = parseFloat(this.getAttribute('data-original-total').replace(',', '.'));
+
+            if (this.checked) {
+                const maxDiscount = originalTotal * 0.50;
+                const appliedDiscount = Math.min(userBonuses, maxDiscount);
+                const newTotal = originalTotal - appliedDiscount;
+
+                finalTotalDisplay.textContent = Math.round(newTotal) + ' ₴';
+                if (discountDisplay) {
+                    discountAmountSpan.textContent = Math.round(appliedDiscount);
+                    discountDisplay.classList.remove('hidden');
+                }
+            } else {
+                finalTotalDisplay.textContent = Math.round(originalTotal) + ' ₴';
+                if (discountDisplay) {
+                    discountDisplay.classList.add('hidden');
+                }
+            }
+        });
+    }
+
+    // --- ЛОГІКА КОРЗИНИ (Делегування подій) ---
+    document.addEventListener('click', function(e) {
         const getCsrfToken = () => document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie("csrftoken");
 
-        // Зменшити / Збільшити кількість
         if (e.target.closest('.cart-update-btn')) {
             const btn = e.target.closest('.cart-update-btn');
             const dishId = btn.getAttribute('data-dish-id');
@@ -291,7 +320,6 @@ window.toggleCartModal = function() {
             }
         }
 
-        // Ручне введення кількості
         if (e.target.classList.contains('cart-quantity-input')) {
             e.target.addEventListener('change', function() {
                 const dishId = this.getAttribute('data-dish-id');
@@ -304,7 +332,6 @@ window.toggleCartModal = function() {
             }, { once: true });
         }
 
-        // Видалення товару
         if (e.target.closest('.cart-remove-btn')) {
             const btn = e.target.closest('.cart-remove-btn');
             const dishId = btn.getAttribute('data-dish-id');
@@ -313,7 +340,6 @@ window.toggleCartModal = function() {
             }
         }
 
-        // Функція: Оновити кількість (AJAX)
         function updateCartItem(dishId, quantity) {
             fetch('/cart/update/', {
                 method: 'POST',
@@ -333,7 +359,6 @@ window.toggleCartModal = function() {
             });
         }
 
-        // Функція: Видалити товар (AJAX)
         function removeCartItem(dishId) {
             fetch('/cart/remove/', {
                 method: 'POST',
@@ -353,7 +378,6 @@ window.toggleCartModal = function() {
             });
         }
 
-        // Функція: Перемалювати корзину
         function refreshCartUI() {
             fetch("/cart/")
                 .then(res => res.text())
@@ -361,8 +385,6 @@ window.toggleCartModal = function() {
                     const container = document.getElementById("cart-container");
                     if (container) container.innerHTML = html;
 
-                    // Оновлюємо цифру на значку корзини в хедері (якщо треба, треба запит на отримання цифри, але зазвичай бекенд повертає її в JSON.
-                    // Щоб не робити зайвих запитів, оновимо сторінку або можна зробити окремий endpoint. Для надійності оновлюємо сторінку, якщо корзина порожня)
                     if (html.includes('Корзина порожня')) {
                         const counter = document.getElementById("cart-count");
                         if(counter) counter.textContent = '0';
@@ -370,3 +392,5 @@ window.toggleCartModal = function() {
                 });
         }
     });
+
+}); // Кінець DOMContentLoaded
