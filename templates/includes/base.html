@@ -93,9 +93,6 @@
         {% endblock %}
     </main>
 
-    {% block footer %}
-    {% endblock %}
-
     <div id="cartModal" class="fixed inset-0 bg-black/60 hidden justify-center items-center z-50 backdrop-blur-sm">
         <div class="bg-white w-[90%] max-w-3xl rounded-xl p-6 relative shadow-2xl transform transition-all">
             <button onclick="toggleCartModal()" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-3xl leading-none">&times;</button>
@@ -106,10 +103,141 @@
         </div>
     </div>
 
+    <div id="ai-chat-widget" class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+
+        <div id="ai-chat-box" class="hidden bg-white w-80 sm:w-96 rounded-3xl shadow-2xl border border-gray-200 overflow-hidden flex-col transition-all transform origin-bottom-right mb-4">
+
+            <div class="bg-gradient-to-r from-primary to-[#6B3410] text-white p-4 flex justify-between items-center shadow-md z-10">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-white/20 rounded-full flex justify-center items-center backdrop-blur-sm">
+                        <i class="fas fa-robot text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm leading-tight">ШІ-Помічник</h4>
+                        <span class="text-[10px] text-white/70">Гуцульський двір</span>
+                    </div>
+                </div>
+                <button id="ai-close-btn" class="text-white hover:text-gray-200 transition p-2">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+
+            <div id="ai-messages" class="h-80 overflow-y-auto p-4 bg-gray-50 flex flex-col gap-4">
+                <div class="flex gap-2">
+                    <div class="w-8 h-8 rounded-full bg-primary flex-shrink-0 flex justify-center items-center text-white text-xs">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="bg-white border border-gray-100 p-3 rounded-2xl rounded-tl-none shadow-sm text-sm text-gray-700 max-w-[85%]">
+                        Привіт! Я віртуальний помічник ресторану. Запитай мене про наше меню, бронювання або інгредієнти страв! ✨
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-3 bg-white border-t border-gray-100 flex gap-2 items-center">
+                <input type="text" id="ai-input" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition" placeholder="Напишіть повідомлення..." autocomplete="off">
+                <button id="ai-send-btn" class="bg-primary hover:bg-[#6B3410] text-white w-12 h-12 rounded-xl flex justify-center items-center transition shadow-md flex-shrink-0">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+
+        <button id="ai-toggle-btn" class="w-16 h-16 bg-primary hover:bg-[#6B3410] text-white rounded-full shadow-xl flex justify-center items-center text-2xl transition transform hover:scale-105 hover:-translate-y-1">
+            <i class="fas fa-comment-dots"></i>
+        </button>
+    </div>
+    <footer class="bg-gray-900 text-white pt-16 pb-8 border-t-4 border-primary mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+
+                <div class="md:col-span-1">
+                    <div class="flex items-center gap-2 mb-6">
+                        <span class="text-3xl">🏔️</span>
+                        <div class="flex flex-col">
+                            <span class="text-xl font-bold text-white leading-none">Гуцульський двір</span>
+                            <span class="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Ресторан</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                        Шматочок справжньої України, чарівний світ Карпатських гір та давніх українських традицій у кожній страві.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-primary hover:text-white transition">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-primary hover:text-white transition">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-primary hover:text-white transition">
+                            <i class="fab fa-telegram-plane"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-bold text-white mb-6 border-b border-gray-800 pb-2">Швидкі посилання</h4>
+                    <ul class="space-y-3">
+                        <li><a href="{% url 'main:index' %}" class="text-gray-400 hover:text-primary transition flex items-center gap-2"><i class="fas fa-chevron-right text-xs"></i> Головна</a></li>
+                        <li><a href="{% url 'restaurant:menu' %}" class="text-gray-400 hover:text-primary transition flex items-center gap-2"><i class="fas fa-chevron-right text-xs"></i> Наше меню</a></li>
+                        <li><a href="{% url 'booking:booking' %}" class="text-gray-400 hover:text-primary transition flex items-center gap-2"><i class="fas fa-chevron-right text-xs"></i> Бронювання</a></li>
+                        <li><a href="{% url 'comments:leave_comment' %}" class="text-gray-400 hover:text-primary transition flex items-center gap-2"><i class="fas fa-chevron-right text-xs"></i> Відгуки</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-bold text-white mb-6 border-b border-gray-800 pb-2">Контакти</h4>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-map-marker-alt text-primary mt-1"></i>
+                            <span class="text-gray-400 text-sm">вул. Карпатська, 12<br>м. Яремче, Україна</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-phone-alt text-primary"></i>
+                            <span class="text-gray-400 text-sm">+38 (099) 123 45 67</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-envelope text-primary"></i>
+                            <span class="text-gray-400 text-sm">info@hutsul-dvir.ua</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-bold text-white mb-6 border-b border-gray-800 pb-2">Години роботи</h4>
+                    <ul class="space-y-3">
+                        <li class="flex justify-between text-sm text-gray-400">
+                            <span>Понеділок - П'ятниця</span>
+                            <span class="font-bold text-white">10:00 - 22:00</span>
+                        </li>
+                        <li class="flex justify-between text-sm text-gray-400">
+                            <span>Субота - Неділя</span>
+                            <span class="font-bold text-white">11:00 - 23:00</span>
+                        </li>
+                        <li class="mt-4 pt-4 border-t border-gray-800">
+                            <span class="inline-block bg-green-900 text-green-400 text-xs px-2 py-1 rounded border border-green-800">
+                                <i class="fas fa-circle text-[8px] mr-1"></i> Відчинено зараз
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-500 text-sm mb-4 md:mb-0">
+                    &copy; {% now "Y" %} Ресторан "Гуцульський двір". Всі права захищено.
+                </p>
+                <div class="flex space-x-6 text-sm text-gray-500">
+                    <a href="#" class="hover:text-white transition">Політика конфіденційності</a>
+                    <a href="#" class="hover:text-white transition">Умови використання</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="{% static 'deps/js/jquery/jquery-3.7.0.min.js' %}"></script>
+    <script src="{% static 'deps/js/main.js' %}"></script>
+    <script src="{% static 'deps/js/ai_chat.js' %}"></script>
 
     {% block script %}
-        <script src="{% static 'deps/js/jquery/jquery-3.7.0.min.js' %}"></script>
-        <script src="{% static 'deps/js/main.js' %}"></script>
     {% endblock %}
 </body>
 </html>
