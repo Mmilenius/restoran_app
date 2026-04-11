@@ -7,3 +7,5 @@ cache
 static/deps/images
 db.sqlite3
 media/
+
+datadump.json

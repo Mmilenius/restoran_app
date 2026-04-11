@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: restorant_db
+    environment:
+      # Вказуємо Docker створити базу з твоїми даними
+      POSTGRES_DB: restorant_app
+      POSTGRES_USER: home
+      POSTGRES_PASSWORD: 1234
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  web:
+    build: .
+    container_name: restorant_web
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      # Передаємо ці змінні в Django
+      - DB_NAME=restorant_app
+      - DB_USER=home
+      - DB_PASSWORD=1234
+      - DB_HOST=db  # Зверни увагу: тут назва сервісу 'db', а не localhost
+      - DB_PORT=5432
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
