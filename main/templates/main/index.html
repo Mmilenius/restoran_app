@@ -54,11 +54,20 @@
                     </a>
                 </div>
             </div>
-            <div class="bg-gray-200 rounded-xl h-[400px] flex items-center justify-center shadow-inner overflow-hidden">
-                <div class="text-gray-400 text-center">
-                    <i class="fas fa-image text-6xl mb-3"></i>
-                    <p>Фото страви</p>
-                </div>
+            <div class="rounded-xl h-[400px] overflow-hidden shadow-2xl transform hover:scale-[1.02] transition duration-500 relative group">
+                {% if random_dish and random_dish.image %}
+                    <img src="{{ random_dish.image.url }}" 
+                         alt="{{ random_dish.name }}" 
+                         class="w-full h-full object-cover">
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                        <h4 class="text-white text-xl font-bold">{{ random_dish.name }}</h4>
+                        <p class="text-accent font-semibold">{{ random_dish.price }} грн</p>
+                    </div>
+                {% else %}
+                    <img src="https://images.unsplash.com/photo-1606064466582-71fd405106f3?q=80&w=1000&auto=format&fit=crop" 
+                         alt="Українська кухня" 
+                         class="w-full h-full object-cover">
+                {% endif %}
             </div>
         </div>
     </section>
